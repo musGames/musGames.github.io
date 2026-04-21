@@ -1,0 +1,42 @@
+<div class="wrapper">
+    <div class="container">
+        Dropdown til valg af spil
+        <select [(ngModel)]="selectedGameId" (change)="loadHighscores(); listenForHighscoreUpdates()">
+            <option value="" disabled hidden>Vælg et spil</option>
+            <option *ngFor="let game of games" [value]="game.id">{{ game.name }}</option>
+        </select>
+
+        <div *ngIf="highscores.length > 0" class="leaderboard-table-container">
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>POS</th>
+                        <th>SCORE</th>
+                        <th>NAME</th>
+                        <th>GAME</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr *ngFor="let entry of highscores; let i = index">
+                        <td>
+                            <span class="position">
+                                {{ i + 1}}
+                            </span>
+                        </td>
+
+                        <td>{{ entry.score }}</td>
+                        <td>{{ entry.displayName }}</td>
+                        <td>{{ entry.gameTitle }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div *ngIf="highscores.length === 0">
+            <p>Der er endnu ikke nogen data i leaderboardet.</p>
+        </div>
+
+    </div>
+
+</div>
