@@ -5,11 +5,13 @@ import {
   signInWithEmailAndPassword,
   signOut,
   setPersistence,
-  browserLocalPersistence
+  browserLocalPersistence,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 import { getDatabase, ref, get } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
-import { environment } from '../../environment/environment';
+import { environment } from '../../environment/environment'; 
+
 const app = initializeApp(environment.firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
@@ -32,27 +34,33 @@ export class FirebaseService {
     this.listenToAuthStateChanges();
   }
 
-  // Get the Firebase Auth instance
   getAuth() {
     return auth;
   }
 
-  // Get the Firebase Database instance
   getDatabase() {
     return database;
   }
 
-  // Login with email + password
   loginUser(email: string, password: string): Promise<any> {
     return signInWithEmailAndPassword(auth, email, password);
   }
 
-  // Logout current user
   logout(): Promise<void> {
     return signOut(auth);
   }
 
-  // Auth state listener
+  resetPassword(email: string): Promise<void> {
+    return sendPasswordResetEmail(auth, email)
+      .then(() => {
+        console.log('Password reset email sent.');
+      })
+      .catch((error) => {
+        console.error('Error sending password reset email:', error);
+        throw error;
+      });
+  }
+
   private listenToAuthStateChanges(): void {
     onAuthStateChanged(auth, (user) => {
       this.currentUser = user ? user : null;
@@ -67,9 +75,9 @@ export class FirebaseService {
     return this.currentUser;
   }
 
-  // Get user data by UID
   getUserbyUID(uid: string): Promise<any> {
     const userRef = ref(database, 'users/' + uid);
+
     return get(userRef)
       .then((snapshot) => {
         if (snapshot.exists()) {
