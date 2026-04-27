@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { FirebaseService } from '../services/firebase.service';
+import { FirebaseService } from '../Services/firebase.service';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 @Injectable({

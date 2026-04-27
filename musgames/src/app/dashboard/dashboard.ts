@@ -4,7 +4,7 @@
 */
 
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FirebaseService } from '../services/firebase.service';
+import { FirebaseService } from '../Services/firebase.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { get, ref, update } from 'firebase/database';
