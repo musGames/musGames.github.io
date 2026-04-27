@@ -176,4 +176,19 @@ export class FirebaseService {
   deleteGame(gameId: string): Promise<void> {
     return set(ref(this.db, `games/${gameId}`), null);
   }
+
+    getHighscoresForGame(gameId: string): Promise<any[]> {
+    const highscoresRef = ref(this.getDatabase(), 'highscores/');
+    return get(highscoresRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const filtered = Object.keys(data)
+          .map(key => ({ id: key, ...data[key] }))
+          .filter(score => score.games_Id === gameId);
+  
+        return filtered;
+      }
+      return [];
+    });
+  }
 }

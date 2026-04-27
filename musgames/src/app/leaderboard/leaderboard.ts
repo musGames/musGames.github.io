@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FirebaseService } from '../Services/firebase.service';
+import { FirebaseService } from '../services/firebase.service';
 import { get, ref, onValue} from 'firebase/database';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './leaderboard.html',
   styleUrl: './leaderboard.css',
 })
-export class Leaderboard implements onInit {
+export class Leaderboard implements OnInit {
 
   highscores: any[] = [];
   games: any [] = [];
@@ -38,7 +38,7 @@ export class Leaderboard implements onInit {
   async loadHighscores() {
     if (this.selectedGameId) {
       this.firebaseService.getHighscoresForGame(this.selectedGameId)
-      .then(this.highscores => {
+      .then(highscores => {
         this.highscores = this.highscores.sort((a, b) => b.score - a.score);
       });
     }
