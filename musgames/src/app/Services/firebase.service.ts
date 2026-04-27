@@ -8,7 +8,7 @@ import {
   browserLocalPersistence,
   sendPasswordResetEmail
 } from 'firebase/auth';
-import { getDatabase, ref, get } from 'firebase/database';
+import { getDatabase, ref, get, ref, get } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { environment } from '../../environment/environment'; 
 
@@ -90,5 +90,27 @@ export class FirebaseService {
         console.error('Error fetching user data:', error);
         throw error;
       });
+  }
+
+  // Bruges i din component
+  getDatabase(): Database {
+    return this.db;
+  }
+
+  // Henter highscores for valgt spil
+  getHighscoresForGame(gameId: string): Promise<any[]> {
+    const highscoresRef = ref(this.db, 'highscores/');
+
+    return get(highscoresRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+
+        return Object.keys(data)
+          .map(key => ({ id: key, ...data[key] }))
+          .filter(score => score.games_Id === gameId);
+      }
+
+      return [];
+    });
   }
 }
