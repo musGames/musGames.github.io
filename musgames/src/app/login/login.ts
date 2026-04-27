@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FirebaseService } from '../Services/firebase.service';
+import { FirebaseService } from '../services/firebase.service';
 import { NgIf } from '@angular/common';
 import { getAuth, signInWithEmailAndPassword, UserCredential } from 'firebase/auth';
 
