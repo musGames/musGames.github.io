@@ -1,0 +1,80 @@
+import { Component } from '@angular/core';
+import { FirebaseService } from '../services/firebase.service';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-signup',
+  imports: [],
+  templateUrl: './signup.html',
+  styleUrl: './signup.css',
+})
+export class Signup {
+  name: string= '';
+  email: string='';
+  emailConfirm: string='';
+  password: string='';
+  passwordConfirm: string='';
+
+constructor(private firebaseService: FirebaseService, private router: Router){}
+
+//update name 
+updateName(event:any): void{
+  this.name=event.target.value;
+
+}
+
+//update email
+updateEmail(event:any): void{
+  this.email=event.target.value;
+}
+
+//update email confirmation
+updateEmailConfirm(event:any):void{
+  this.emailConfirm= event.target.value;
+}
+
+//update the password
+updatePassword(event:any):void{
+  this.password= event.target.value;
+}
+
+//update password confirmation
+updatePasswordConfirm(event:any):void{
+  this.passwordConfirm=event.target.value;
+}
+
+register(): void{
+  if(!this.name || !this.email || !this.emailConfirm || !this.password || !this.passwordConfirm){
+    alert('All fields are requiered')
+  }
+
+if(this.email !== this.emailConfirm){
+  alert('Emails do not match');
+  return;
+}
+
+if(this.password !== this.passwordConfirm){
+  alert('Passwords do not match');
+  return;
+}
+
+
+const isAdmin=false; // set true if you want user to be an admin
+
+
+this.firebaseService.registerUser(this.email, this.password, this.name)
+.then(() => {
+  alert('Signup successful! Please check your email for the verification link');
+  this.router.navigate(['/login']);
+})
+.catch((error) => {
+  alert('Error' + error.message)
+});
+}
+
+goToLogin(): void{
+  this.router.navigate(['/login']);
+
+}
+
+}

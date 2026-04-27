@@ -5,10 +5,13 @@ import {
   Auth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signOut,
   setPersistence,
   browserLocalPersistence,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  updateProfile,
+  sendEmailVerification
 } from 'firebase/auth';
 import { getDatabase, Database, ref, get, update, set } from 'firebase/database';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
@@ -47,6 +50,40 @@ export class FirebaseService {
 
   getDatabase() {
     return this.db;
+  }
+
+  registerUser(email: string, password: string, displayName: string): Promise<any> {
+    return createUserWithEmailAndPassword(this.auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+
+        return updateProfile(user, { displayName }).then(() => {
+          return sendEmailVerification(user).then(() => {
+            console.log('Verification email sent.');
+
+            const isAdmin = FirebaseService.isHardcodedAdmin(email);
+
+            return this.createUser(user.uid, displayName, email, isAdmin).then(() => ({
+              uid: user.uid,
+              isAdmin
+            }));
+          });
+        });
+      });
+  }
+
+  createUser(uid: string, displayName: string, email: string, isAdmin: boolean): Promise<void> {
+    return set(ref(this.db, `users/${uid}`), {
+      displayName,
+      email,
+      isAdmin,
+      createdAt: new Date().toISOString()
+    });
+  }
+
+  private static isHardcodedAdmin(email: string): boolean {
+    const adminEmails = ['selin@selin.dk'];
+    return adminEmails.includes(email);
   }
 
   loginUser(email: string, password: string): Promise<any> {
@@ -177,17 +214,20 @@ export class FirebaseService {
     return set(ref(this.db, `games/${gameId}`), null);
   }
 
-    getHighscoresForGame(gameId: string): Promise<any[]> {
+  getHighscoresForGame(gameId: string): Promise<any[]> {
     const highscoresRef = ref(this.getDatabase(), 'highscores/');
+
     return get(highscoresRef).then((snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
+
         const filtered = Object.keys(data)
-          .map(key => ({ id: key, ...data[key] }))
-          .filter(score => score.games_Id === gameId);
-  
+          .map((key) => ({ id: key, ...data[key] }))
+          .filter((score) => score.games_Id === gameId);
+
         return filtered;
       }
+
       return [];
     });
   }
