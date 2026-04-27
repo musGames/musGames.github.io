@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component,NgModule } from '@angular/core';
 import { Router } from '@angular/router';
-import { FirebaseService } from '../Services/firebase.service';
+import { FirebaseService } from '../services/firebase.service';
 import { NgModel } from '@angular/forms';
 @Component({
   selector: 'app-forgot-password',

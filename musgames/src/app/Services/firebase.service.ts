@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
 import { initializeApp, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth } from 'firebase/auth';
+import {
+  getAuth,
+  Auth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  setPersistence,
+  browserLocalPersistence,
+  sendPasswordResetEmail
+} from 'firebase/auth';
 import { getDatabase, Database, ref, get, update, set } from 'firebase/database';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
 import { environment } from '../../environment/environment';
@@ -13,25 +22,83 @@ export class FirebaseService {
   public auth: Auth;
   public db: Database;
   public storage: FirebaseStorage;
+  public currentUser: any = null;
 
   constructor() {
     this.app = initializeApp(environment.firebaseConfig);
     this.auth = getAuth(this.app);
     this.db = getDatabase(this.app);
     this.storage = getStorage(this.app);
+
+    setPersistence(this.auth, browserLocalPersistence)
+      .then(() => {
+        console.log('Auth persistence set to LOCAL');
+      })
+      .catch((error) => {
+        console.error('Error setting auth persistence:', error);
+      });
+
+    this.listenToAuthStateChanges();
   }
-/* Lavet af Martin 25-03-2025 */
-  /* bare så resten af koden stadig kan bruge samme måde som før */
+
   getAuth() {
     return this.auth;
   }
 
-  /* samme her så dashboardet kan hente databasen uden at du skal lave alt om */
   getDatabase() {
     return this.db;
   }
 
-  /* tjekker om den bruger der er logget ind er admin */
+  loginUser(email: string, password: string): Promise<any> {
+    return signInWithEmailAndPassword(this.auth, email, password);
+  }
+
+  logout(): Promise<void> {
+    return signOut(this.auth);
+  }
+
+  resetPassword(email: string): Promise<void> {
+    return sendPasswordResetEmail(this.auth, email)
+      .then(() => {
+        console.log('Password reset email sent.');
+      })
+      .catch((error) => {
+        console.error('Error sending password reset email:', error);
+        throw error;
+      });
+  }
+
+  private listenToAuthStateChanges(): void {
+    onAuthStateChanged(this.auth, (user) => {
+      this.currentUser = user ? user : null;
+    });
+  }
+
+  getAuthStateListener(callback: (user: any) => void): void {
+    onAuthStateChanged(this.auth, callback);
+  }
+
+  getCurrentUser(): any {
+    return this.currentUser;
+  }
+
+  getUserbyUID(uid: string): Promise<any> {
+    const userRef = ref(this.db, 'users/' + uid);
+
+    return get(userRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          return snapshot.val();
+        } else {
+          throw new Error('User not found');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching user data:', error);
+        throw error;
+      });
+  }
+
   checkIfAdmin(uid: string): Promise<boolean> {
     const userRef = ref(this.db, `users/${uid}`);
 
@@ -50,7 +117,6 @@ export class FirebaseService {
       });
   }
 
-  /* henter alle spil fra games og henter deres game_id*/
   getAllGames(): Promise<any[]> {
     const gamesRef = ref(this.db, 'games');
 
@@ -73,7 +139,6 @@ export class FirebaseService {
       });
   }
 
-  /* hvis plays mangler på et spil så bliver det sat til 0 så dashboardet ikke rammer noget undefined */
   async addMissingPlaysField(): Promise<void> {
     try {
       const gamesRef = ref(this.db, 'games');
@@ -108,9 +173,7 @@ export class FirebaseService {
     }
   }
 
-  /* sletter et spil ud fra dets id */
   deleteGame(gameId: string): Promise<void> {
     return set(ref(this.db, `games/${gameId}`), null);
   }
-  /* Lavet af Martin 25-03-2025 */
 }
