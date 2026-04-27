@@ -1,0 +1,36 @@
+<div class="signup-container" >
+    <div class="signup-box">
+        <h2>Signup</h2>
+
+        <div class="input-group">
+            <input type?´="name" [value]="name" (input)="updateName($event)" placeholder="Enter your username"/>
+        </div>
+
+
+        <div class="input-group">
+            <input type?´="email" [value]="email" (input)="updateEmail($event)" placeholder="Enter your e-mail"/>
+        </div>
+
+        
+        <div class="input-group">
+            <input type?´="emailConfirm" [value]="emailConfirm" (input)="updateEmailConfirm($event)" placeholder="Confirm your e-mail"/>
+        </div>
+
+
+        <div class="input-group">
+            <input type?´="password" [value]="password" (input)="updatePassword($event)" placeholder="Enter your password" />
+        </div>
+
+        <div class="input-group">
+            <input type?´="passwordConfirm" [value]="passwordConfirm" (input)="updatePasswordConfirm($event)" placeholder="Confirm your password"/>
+        </div>
+
+        <button class="signup-btn" (click)="register()">Signup</button>
+
+        <p class="login-text"> Already have an account?
+
+        <button class="login-btn"(click)="goToLogin()">Login</button>
+        
+        </p>
+    </div>
+</div>
