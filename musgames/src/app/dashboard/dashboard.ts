@@ -1,11 +1,13 @@
 /*
   dashboardet
   skrevet om så den ikke viser login besked 2 gange
+  firebase data bliver kun hentet i browseren så SSR ikke henter spillene på serveren
+  changeDetectorRef bruges til at tvinge dashboardet til at vise firebase data efter det er hentet
 */
 
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { FirebaseService } from '../services/firebase.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { get, ref, update } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
@@ -18,7 +20,6 @@ import { getAuth } from 'firebase/auth';
   styleUrls: ['./dashboard.css']
 })
 export class DashboardComponent implements OnInit {
-  /* bruges bare til at vide om den der er logget ind er admin så admin ting kan vises eller skjules */
   isAdmin = false;
 
   games: any[] = [];
@@ -28,34 +29,41 @@ export class DashboardComponent implements OnInit {
   @ViewChild('scrollContainer', { static: false })
   scrollContainer!: ElementRef;
 
-  constructor(private firebaseService: FirebaseService) {}
+  constructor(
+    private firebaseService: FirebaseService,
+    @Inject(PLATFORM_ID) private platformId: object,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {}
 
-  /* det her kører når dashboardet loader og så sætter den admin status og henter spillene og giver manglende plays feltet 0 */
   ngOnInit(): void {
-    this.initializeAdminStatus();
-    this.loadGamesFromFirebase();
-    this.addMissingPlaysField();
+    if (isPlatformBrowser(this.platformId)) {
+      this.initializeAdminStatus();
+      this.loadGamesFromFirebase();
+      this.addMissingPlaysField();
+    }
   }
 
-  /* tjekker den bruger der er logget ind lige nu og finder ud af om personen er admin */
   private initializeAdminStatus(): void {
     const current = getAuth().currentUser;
 
     if (current) {
       this.firebaseService.checkIfAdmin(current.uid)
-        .then(status => this.isAdmin = status)
+        .then(status => {
+          this.isAdmin = status;
+          this.changeDetectorRef.detectChanges();
+        })
         .catch(err => {
           console.error('Error checking admin status in Dashboard:', err);
           this.isAdmin = false;
+          this.changeDetectorRef.detectChanges();
         });
     } else {
-      /* hvis der ikke er nogen bruger så bliver den bare sat til false selvom det egentlig ikke burde ske */
       this.isAdmin = false;
+      this.changeDetectorRef.detectChanges();
     }
   }
 
-  /* henter alle spil fra firebase og gemmer dem i games og laver også en liste med det nyeste spil og en med de mest spillede */
-  async loadGamesFromFirebase() {
+  async loadGamesFromFirebase(): Promise<void> {
     try {
       const db = this.firebaseService.getDatabase();
       const gamesRef = ref(db, 'games');
@@ -63,6 +71,7 @@ export class DashboardComponent implements OnInit {
 
       if (snapshot.exists()) {
         const data = snapshot.val();
+
         const allGames = Object.keys(data).map((key) => ({
           id: key,
           ...data[key],
@@ -70,28 +79,35 @@ export class DashboardComponent implements OnInit {
 
         this.games = allGames;
 
-        /* tager alle spillene og sorterer dem efter hvornår de blev lavet så det nyeste kommer først og så tager den kun det første */
         this.latestGames = allGames
           .slice()
           .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
           .slice(0, 1);
 
-        /* finder kun spil hvor plays faktisk er et tal og sorterer dem så dem med flest plays ligger øverst og tager kun top 10 */
         this.popularGames = allGames
           .filter(game => typeof game.plays === 'number')
           .sort((a, b) => b.plays - a.plays)
           .slice(0, 10);
 
         console.log('Hentede spil fra Firebase:', this.games);
+
+        this.changeDetectorRef.detectChanges();
       } else {
+        this.games = [];
+        this.latestGames = [];
+        this.popularGames = [];
+
         console.log('Ingen spil fundet i databasen.');
+
+        this.changeDetectorRef.detectChanges();
       }
     } catch (error) {
       console.error('Fejl ved indlæsning af spil:', error);
+
+      this.changeDetectorRef.detectChanges();
     }
   }
 
-  /* rykker scroll boksen mod venstre så man kan se de forrige cards */
   scrollLeft(): void {
     if (this.scrollContainer) {
       this.scrollContainer.nativeElement.scrollBy({
@@ -101,7 +117,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  /* rykker scroll boksen mod højre så man kan se de næste cards */
   scrollRight(): void {
     if (this.scrollContainer) {
       this.scrollContainer.nativeElement.scrollBy({
@@ -111,23 +126,26 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  /* spørger først om man er sikker og hvis man er det så sletter den spillet og fjerner det også fra de arrays der allerede er vist på siden */
   deleteGame(gameId: string): void {
-    if (confirm("Er du sikker på, at du vil slette dette spil?")) {
+    if (confirm('Er du sikker på, at du vil slette dette spil?')) {
       this.firebaseService.deleteGame(gameId)
         .then(() => {
           this.games = this.games.filter(game => game.id !== gameId);
           this.latestGames = this.latestGames.filter(game => game.id !== gameId);
           this.popularGames = this.popularGames.filter(game => game.id !== gameId);
-          console.log("Spillet blev slettet.");
+
+          console.log('Spillet blev slettet.');
+
+          this.changeDetectorRef.detectChanges();
         })
         .catch(error => {
-          console.error("Fejl ved sletning af spil:", error);
+          console.error('Fejl ved sletning af spil:', error);
+
+          this.changeDetectorRef.detectChanges();
         });
     }
   }
 
-  /* går alle spil igennem og hvis et spil ikke har plays feltet så bliver det sat til 0 så resten af koden ikke fejler på det */
   async addMissingPlaysField(): Promise<void> {
     try {
       const db = this.firebaseService.getDatabase();
@@ -141,7 +159,6 @@ export class DashboardComponent implements OnInit {
         for (const gameId in data) {
           const game = data[gameId];
 
-          /* hvis plays ikke allerede er et tal så opdaterer den spillet inde i databasen og giver det værdien 0 */
           if (typeof game.plays !== 'number') {
             const gameRef = ref(db, `games/${gameId}`);
             updates.push(update(gameRef, { plays: 0 }));
@@ -151,19 +168,22 @@ export class DashboardComponent implements OnInit {
 
         await Promise.all(updates);
 
-        /* hvis der ikke var noget at opdatere så siger den bare det og ellers skriver den hvor mange spil den har rettet */
         if (updates.length === 0) {
           console.log('Alle spil har allerede feltet "plays".');
         } else {
           console.log(`🎉 Tilføjede 'plays' til ${updates.length} spil.`);
         }
 
+        this.changeDetectorRef.detectChanges();
       } else {
         console.log('⚠️ Der findes ingen spil i databasen.');
-      }
 
+        this.changeDetectorRef.detectChanges();
+      }
     } catch (error) {
       console.error('❌ Fejl ved tilføjelse af "plays"-felter:', error);
+
+      this.changeDetectorRef.detectChanges();
     }
   }
 }
