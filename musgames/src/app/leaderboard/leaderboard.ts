@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-leaderboard',
+  standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './leaderboard.html',
   styleUrl: './leaderboard.css',

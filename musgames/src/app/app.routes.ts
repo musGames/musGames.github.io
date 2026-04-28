@@ -3,6 +3,9 @@ import { DashboardComponent } from '../app/dashboard/dashboard';
 import { Login } from './login/login';
 import { ForgotPassword } from './forgot-password/forgot-password';
 import { Signup } from './signup/signup';
+import { Leaderboard } from './leaderboard/leaderboard';
+import { AuthGuard } from './guards/auth.guard';
+
 export const routes: Routes = [
   {
     path: '',
@@ -13,5 +16,6 @@ export const routes: Routes = [
     {path: 'login', component: Login },
     {path: 'dashboard', component: DashboardComponent},
     {path: 'signup', component: Signup},
-    {path: 'forgot-password', component: ForgotPassword}
+    {path: 'forgot-password', component: ForgotPassword},
+    {path: 'leaderboard', component: Leaderboard}
 ];
