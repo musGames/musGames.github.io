@@ -1,0 +1,72 @@
+<div class="dashboard-container">
+
+    <div class="search-bar-container">
+        <div class="search-bar">
+            <input type="text" name="Search by email" (input)="onSearchInput($event)"/>
+        </div>
+    </div>
+
+
+<div *ngIf="isLoading" class="spinner">Loading...</div>
+
+<div class="tables-container" *ngIf="!isLoading">
+
+<div class="user-table">
+    <h2>Admins</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of admins">
+                <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+
+                <td>
+                    <label class="switch">
+                        <input type="checkbox" [checked]="user.isAdmin" (change)="toggleAdminRights(user)"/>
+                    
+
+                    <span class="slider"></span>
+                    </label>
+                    <button class="delete-button" (click)="deleteUser(user.uid)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="user-table">
+    <h2>Users</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let user of regularUsers">¨
+                <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+
+            <td>
+                <label class="switch"> 
+                    <input type="checkbox" [checked]="user.isAdmin" (change)="toggleAdminRights(user)"/>
+                    <span class="slider"></span>
+                </label>
+                <button class="delete-button" (click)="deleteUser(user.uid)">Delete</button>
+            </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+
+</div>

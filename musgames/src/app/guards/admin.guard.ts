@@ -17,7 +17,7 @@ export class AdminGuard implements CanActivate {
 
         // If there is no user, redirect to admin login page
         if (!user) {
-          this.router.navigate(['/admin-login']);
+          this.router.navigate(['/admin-dashboard']);
           resolve(false);
           return;
         }
@@ -26,7 +26,7 @@ export class AdminGuard implements CanActivate {
         const isAdmin = await this.firebaseService.checkIfAdmin(user.uid);
         if (!isAdmin) {
           // Optionally, redirect non-admins to another page (here, the homepage)
-          this.router.navigate(['/']);
+          this.router.navigate(['/login']);
           resolve(false);
           return;
         }

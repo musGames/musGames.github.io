@@ -34,12 +34,8 @@ export class FirebaseService {
     this.storage = getStorage(this.app);
 
     setPersistence(this.auth, browserLocalPersistence)
-      .then(() => {
-        console.log('Auth persistence set to LOCAL');
-      })
-      .catch((error) => {
-        console.error('Error setting auth persistence:', error);
-      });
+      .then(() => console.log('Auth persistence set to LOCAL'))
+      .catch((error) => console.error('Error setting auth persistence:', error));
 
     this.listenToAuthStateChanges();
   }
@@ -59,8 +55,6 @@ export class FirebaseService {
 
         return updateProfile(user, { displayName }).then(() => {
           return sendEmailVerification(user).then(() => {
-            console.log('Verification email sent.');
-
             const isAdmin = FirebaseService.isHardcodedAdmin(email);
 
             return this.createUser(user.uid, displayName, email, isAdmin).then(() => ({
@@ -82,8 +76,59 @@ export class FirebaseService {
   }
 
   private static isHardcodedAdmin(email: string): boolean {
-    const adminEmails = ['selin@selin.dk'];
+    const adminEmails = ['celynflacker@gmail.com'];
     return adminEmails.includes(email);
+  }
+
+  checkIfAdmin(uid: string): Promise<boolean> {
+    const userRef = ref(this.db, `users/${uid}`);
+
+    return get(userRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          return userData.isAdmin || false;
+        }
+
+        return false;
+      })
+      .catch((error) => {
+        console.error('Error checking admin status:', error);
+        return false;
+      });
+  }
+
+  createAdminRights(uid: string): Promise<void> {
+    return update(ref(this.db, `users/${uid}`), {
+      isAdmin: true
+    });
+  }
+
+  revokeAdminRights(uid: string): Promise<void> {
+    return update(ref(this.db, `users/${uid}`), {
+      isAdmin: false
+    });
+  }
+
+  getAllUsers(): Promise<any[]> {
+    const usersRef = ref(this.db, 'users/');
+
+    return get(usersRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const usersData = snapshot.val();
+
+        return Object.keys(usersData).map((uid) => ({
+          uid,
+          ...usersData[uid]
+        }));
+      }
+
+      return [];
+    });
+  }
+
+  deleteUser(uid: string): Promise<void> {
+    return set(ref(this.db, `users/${uid}`), null);
   }
 
   loginUser(email: string, password: string): Promise<any> {
@@ -126,31 +171,13 @@ export class FirebaseService {
       .then((snapshot) => {
         if (snapshot.exists()) {
           return snapshot.val();
-        } else {
-          throw new Error('User not found');
         }
+
+        throw new Error('User not found');
       })
       .catch((error) => {
         console.error('Error fetching user data:', error);
         throw error;
-      });
-  }
-
-  checkIfAdmin(uid: string): Promise<boolean> {
-    const userRef = ref(this.db, `users/${uid}`);
-
-    return get(userRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const userData = snapshot.val();
-          return userData.isAdmin || false;
-        }
-
-        return false;
-      })
-      .catch((error) => {
-        console.error('Error checking admin status:', error);
-        return false;
       });
   }
 
@@ -191,19 +218,10 @@ export class FirebaseService {
           if (typeof game.plays !== 'number') {
             const gameRef = ref(this.db, `games/${gameId}`);
             updates.push(update(gameRef, { plays: 0 }));
-            console.log(`✅ Tilføjede 'plays: 0' til spillet ${game.title}`);
           }
         }
 
         await Promise.all(updates);
-
-        if (updates.length === 0) {
-          console.log('Alle spil har allerede feltet "plays".');
-        } else {
-          console.log(`🎉 Tilføjede 'plays' til ${updates.length} spil.`);
-        }
-      } else {
-        console.log('⚠️ Der findes ingen spil i databasen.');
       }
     } catch (error) {
       console.error('❌ Fejl ved tilføjelse af "plays"-felter:', error);
@@ -221,11 +239,9 @@ export class FirebaseService {
       if (snapshot.exists()) {
         const data = snapshot.val();
 
-        const filtered = Object.keys(data)
+        return Object.keys(data)
           .map((key) => ({ id: key, ...data[key] }))
           .filter((score) => score.games_Id === gameId);
-
-        return filtered;
       }
 
       return [];

@@ -65,7 +65,8 @@ export class Login {
       localStorage.setItem('playerName', cred.user.displayName || 'Bruger');
     })
     .finally(() => {
-     
+
+      
       //go to dashboard and force refresh
       this.router.navigate(['/dashboard']).then(() => {
         location.reload();
