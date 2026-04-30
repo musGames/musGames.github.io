@@ -6,6 +6,8 @@ import { Signup } from './signup/signup';
 import path from 'path';
 import { AdminDashboard } from './admin-dashboard/admin-dashboard';
 import { AdminGuard } from './guards/admin.guard';
+import { Leaderboard } from './leaderboard/leaderboard';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -19,4 +21,5 @@ export const routes: Routes = [
     {path: 'signup', component: Signup},
     {path: 'forgot-password', component: ForgotPassword},
     {path: 'admin-dashboard', component: AdminDashboard, canActivate: [AdminGuard]},
+    {path: 'leaderboard', component: Leaderboard}
 ];
