@@ -19,6 +19,7 @@ import { getStorage, FirebaseStorage } from 'firebase/storage';
 import { environment } from '../../environment/environment';
 import { BehaviorSubject } from 'rxjs';
 import { error } from 'console';
+import { Message } from '../chat/Message';
 
 @Injectable({
   providedIn: 'root'
@@ -35,9 +36,6 @@ export class FirebaseService {
 
   public currentDisplayName: string = '';
 
-  private displayNameSubject = new BehaviorSubject<string>('');
-  public currentDisplayName$ = this.displayNameSubject.asObservable();
-  public currentDisplayName: string = '';
 
   constructor() {
     this.app = initializeApp(environment.firebaseConfig);
@@ -217,23 +215,7 @@ export class FirebaseService {
     this.displayNameSubject.next('');
   }
 
-  checkIfAdmin(uid: string): Promise<boolean> {
-    const userRef = ref(this.db, `users/${uid}`);
 
-    return get(userRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const userData = snapshot.val();
-          return userData.isAdmin || false;
-        }
-
-        return false;
-      })
-      .catch((error) => {
-        console.error('Error checking admin status:', error);
-        return false;
-      });
-  }
 
   getAllGames(): Promise<any[]> {
     const gamesRef = ref(this.db, 'games');
@@ -460,27 +442,6 @@ export class FirebaseService {
     }
   }
 
-  refreshDisplayName(uid: string): Promise<void> {
-    return this.getUserbyUID(uid)
-      .then((userData) => {
-        if (userData && userData.displayName) {
-          this.currentDisplayName = userData.displayName;
-          this.displayNameSubject.next(userData.displayName);
-        } else {
-          this.currentDisplayName = '';
-          this.displayNameSubject.next('');
-        }
-      })
-      .catch((error) => {
-        console.error('Error refreshing displayName:', error);
-        this.currentDisplayName = '';
-      });
-  }
-
-  clearDisplayName(): void {
-    this.currentDisplayName = '';
-    this.displayNameSubject.next('');    
-  }
 
   updateUserPassword(uid: string, newPassword: string): Promise<void> {
     const authInstance = this.getAuth();
