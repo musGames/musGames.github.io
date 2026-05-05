@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./upload-game.css'],
   imports: [CommonModule, ReactiveFormsModule],
 })
-export class GamesComponent implements OnInit {
+export class uploadgameComponent implements OnInit {
   gameForm!: FormGroup;
 
   constructor(

@@ -53,13 +53,13 @@
         
         <li *ngIf="isLoggedIn">
             <button class="logout-btn" (click)="logout()">
-                <img src="assets/signout/png" class="icon" />
+                <img src="assets/signout.png" class="icon" />
                 <span class="text" *ngIf="!isMinimized">Log Out</span>
             </button>
         </li>
 
         <li *ngIf="isAdmin">
-            <a [routerLink]="['/games']" routerLinkActive="active">
+            <a [routerLink]="['/upload-game']" routerLinkActive="active">
                 <img src="assets/edit.png" class="icon" />
                 <span class="text" *ngIf="!isMinimized">Create Game</span>
             </a>

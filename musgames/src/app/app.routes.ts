@@ -10,6 +10,7 @@ import { Leaderboard } from './leaderboard/leaderboard';
 import { AuthGuard } from './guards/auth.guard';
 import { GameInterfaceComponent } from './game-interface/game-interface';
 import { SettingsComponent } from './settings/settings';
+import { uploadgameComponent } from './upload-game/upload-game';
 
 export const routes: Routes = [
   {
@@ -25,5 +26,6 @@ export const routes: Routes = [
     {path: 'admin-dashboard', component: AdminDashboard, canActivate: [AdminGuard]},
     {path: 'leaderboard', component: Leaderboard},
     {path: 'game/:gameId', component: GameInterfaceComponent},
-    {path: 'settings', component: SettingsComponent}
+    {path: 'settings', component: SettingsComponent},
+    {path: 'upload-game', component: uploadgameComponent}
 ];
