@@ -16,6 +16,8 @@ import {
 import { getDatabase, Database, ref, get, update, set } from 'firebase/database';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
 import { environment } from '../../environment/environment';
+import { BehaviorSubject } from 'rxjs';
+import { error } from 'console';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +28,10 @@ export class FirebaseService {
   public db: Database;
   public storage: FirebaseStorage;
   public currentUser: any = null;
+
+  private displayNameSubject = new BehaviorSubject<string>('');
+  public currentDisplayName$ = this.displayNameSubject.asObservable();
+  public currentDisplayName: string = '';
 
   constructor() {
     this.app = initializeApp(environment.firebaseConfig);
@@ -91,6 +97,7 @@ export class FirebaseService {
   }
 
   logout(): Promise<void> {
+    this.clearDisplayName();
     return signOut(this.auth);
   }
 
@@ -134,6 +141,28 @@ export class FirebaseService {
         console.error('Error fetching user data:', error);
         throw error;
       });
+  }
+
+  refreshDisplayName(uid: string): Promise<void> {
+    return this.getUserbyUID(uid)
+    .then((userData) => {
+      if (userData && userData.displayName) {
+        this.currentDisplayName = userData.displayName;
+        this.displayNameSubject.next(userData.displayName);
+      } else {
+        this.currentDisplayName = '';
+        this.displayNameSubject.next('');
+      }
+    })
+    .catch((error) => {
+      console.error('Error refreshing displayname:', error);
+      this.currentDisplayName = '';
+      this.displayNameSubject.next('');
+    });
+  }
+  clearDisplayName(): void {
+    this.currentDisplayName = '';
+    this.displayNameSubject.next('');
   }
 
   checkIfAdmin(uid: string): Promise<boolean> {
