@@ -1,0 +1,58 @@
+<div class="game-container">
+  <h2>Opret Nyt Spil</h2>
+  <form [formGroup]="gameForm!">
+    <div class="input-group">
+      <label for="title">Titel</label>
+      <input
+        type="text"
+        id="title"
+        placeholder="Indtast spiltitel..."
+        formControlName="title"
+      />
+    </div>
+
+    <div class="input-group">
+      <label for="description">Beskrivelse</label>
+      <textarea
+        id="description"
+        placeholder="Indtast en kort beskrivelse..."
+        formControlName="description"
+      ></textarea>
+    </div>
+
+    <div class="input-group">
+      <label for="imageUrl">Billede-URL</label>
+      <input
+        type="text"
+        id="imageUrl"
+        placeholder="Indtast URL til spillets billede..."
+        formControlName="imageUrl"
+      />
+    </div>
+
+    <div class="input-group">
+      <label for="netlifyUrl">Netlify-URL</label>
+      <input
+        type="text"
+        id="netlifyUrl"
+        placeholder="Indtast URL til spillet på Netlify..."
+        formControlName="netlifyUrl"
+      />
+    </div>
+
+    <div class="input-group">
+      <label for="platform">Platform</label>
+      <select id="platform" formControlName="platform">
+        <option value="">Vælg platform...</option>
+        <option value="Web">Web</option>
+        <option value="Android">Android</option>
+        <option value="Both">Both</option>
+      </select>
+    </div>
+
+    <!-- The button only appears if the form is valid -->
+    <button type="button" (click)="createNewGame()" *ngIf="gameForm.valid">
+      Opret Spil
+    </button>
+  </form>
+</div>

@@ -1,0 +1,92 @@
+/* Martin 25-03-2025 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  background-color: #ffffff;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+/* Main Container */
+.game-container {
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  margin: 60px auto; /* Centered on the page */
+  border: 5px solid rgb(255, 255, 255);
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Header */
+.game-container h2 {
+  margin-bottom: 20px;
+}
+
+/* Labels */
+.game-container label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Inputs and Textarea */
+.game-container input[type="text"],
+.game-container textarea,
+.game-container select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  font-size: 16px;
+  background-color: #f5f5f5;
+  transition: border-color 0.3s ease;
+}
+
+.game-container input[type="text"]:focus,
+.game-container textarea:focus,
+.game-container select:focus {
+  border-color: #ffffff;
+  outline: none;
+}
+
+/* Submit Button */
+.game-container button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #3f72b500;
+  border: 2px solid #ffffff;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.game-container button[type="submit"]:hover {
+  background: linear-gradient(145deg, #0000003b, #00000049); /* Hover effect */
+}
+button{
+  width: 100%;
+  padding: 12px;
+  background-color: #3f72b500;
+  border: 2px solid #ffffff;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+button:hover {
+  background: white;
+}
+/* Martin 25-03-2025 */

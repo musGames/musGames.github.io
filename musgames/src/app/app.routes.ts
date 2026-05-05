@@ -8,6 +8,8 @@ import { AdminDashboard } from './admin-dashboard/admin-dashboard';
 import { AdminGuard } from './guards/admin.guard';
 import { Leaderboard } from './leaderboard/leaderboard';
 import { AuthGuard } from './guards/auth.guard';
+import { GameInterfaceComponent } from './game-interface/game-interface';
+import { SettingsComponent } from './settings/settings';
 
 export const routes: Routes = [
   {
@@ -21,5 +23,7 @@ export const routes: Routes = [
     {path: 'signup', component: Signup},
     {path: 'forgot-password', component: ForgotPassword},
     {path: 'admin-dashboard', component: AdminDashboard, canActivate: [AdminGuard]},
-    {path: 'leaderboard', component: Leaderboard}
+    {path: 'leaderboard', component: Leaderboard},
+    {path: 'game/:gameId', component: GameInterfaceComponent},
+    {path: 'settings', component: SettingsComponent}
 ];

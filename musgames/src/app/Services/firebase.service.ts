@@ -11,11 +11,14 @@ import {
   browserLocalPersistence,
   sendPasswordResetEmail,
   updateProfile,
-  sendEmailVerification
+  sendEmailVerification,
+  updatePassword
 } from 'firebase/auth';
-import { getDatabase, Database, ref, get, update, set } from 'firebase/database';
+import { getDatabase, Database, ref, get, update, set, push, onChildAdded, remove } from 'firebase/database';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
 import { environment } from '../../environment/environment';
+import { Message } from '../chat/Message';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +29,11 @@ export class FirebaseService {
   public db: Database;
   public storage: FirebaseStorage;
   public currentUser: any = null;
+
+  private displayNameSubject = new BehaviorSubject<string>('');
+  public currentDisplayName$ = this.displayNameSubject.asObservable();
+
+  public currentDisplayName: string = '';
 
   constructor() {
     this.app = initializeApp(environment.firebaseConfig);
@@ -136,6 +144,7 @@ export class FirebaseService {
   }
 
   logout(): Promise<void> {
+    this.clearDisplayName();
     return signOut(this.auth);
   }
 
@@ -203,6 +212,27 @@ export class FirebaseService {
       });
   }
 
+  createGame(
+    gameId: string,
+    title: string,
+    description: string,
+    imageUrl: string,
+    netlifyUrl: string,
+    platform: string,
+    userId: string
+  ): Promise<void> {
+    return set(ref(this.db, `games/${gameId}`), {
+      title,
+      description,
+      imageUrl,
+      netlifyUrl,
+      platform,
+      users_Id: userId,
+      createdAt: new Date().toISOString(),
+      plays: 0 
+    });
+  }
+
   async addMissingPlaysField(): Promise<void> {
     try {
       const gamesRef = ref(this.db, 'games');
@@ -246,5 +276,184 @@ export class FirebaseService {
 
       return [];
     });
+  }
+
+  incrementPlays(gameId: string): Promise<void> {
+    const gameRef = ref(this.db, `games/${gameId}`);
+
+    return get(gameRef).then(snapshot => {
+      if (!snapshot.exists()) throw new Error('Game not found');
+
+      const gameData = snapshot.val();
+      const currentPlays = typeof gameData.plays === 'number' ? gameData.plays : 0;
+
+      return update(gameRef, {
+        plays: currentPlays + 1,
+        lastPlayedAt: new Date().toISOString()
+      });
+    });
+  }
+
+  submitHighscore(displayName: string, email: string, gameTitle: string, score: number, games_Id: string): Promise<void> {
+    const highscoresRef = ref(this.db, 'highscores/');
+
+    return get(highscoresRef).then(snapshot => {
+      const allHighscores = snapshot.val();
+
+      let existingKey: string | null = null;
+      let existingScore: number = 0;
+
+      if (allHighscores) {
+        for (const key in allHighscores) {
+          const entry = allHighscores[key];
+          if (entry.displayName === displayName && entry.games_Id === games_Id) {
+            existingKey = key;
+            existingScore = entry.score;
+            break;
+          }
+        }
+      }
+
+      if (existingKey) {
+        if (score > existingScore) {
+          console.log("⬆️ Ny score er højere – opdaterer.");
+          console.log("Sender highscore:", { displayName, email, gameTitle, score, games_Id });
+
+          return update(ref(this.db, `highscores/${existingKey}`), {
+            score: score,
+            email: email,
+            timestamp: new Date().toISOString()
+          });
+        } else {
+          console.log("⬇️ Ny score er lavere – ignorerer.");
+          return Promise.resolve();
+        }
+      } else {
+        console.log("🆕 Ingen tidligere score – opretter ny.");
+        console.log("Sender highscore:", { displayName, email, gameTitle, score, games_Id });
+
+        const newKey = Date.now();
+        return set(ref(this.db, `highscores/${newKey}`), {
+          displayName: displayName,
+          email: email,
+          gameTitle: gameTitle,
+          score: score,
+          games_Id: games_Id,
+          timestamp: new Date().toISOString()
+        });
+      }
+    });
+  }
+
+  sendMessage( message: Message): Promise<void> {
+    const chatref = ref(this.db, `messages/`);
+
+    return push(chatref, {
+      text: message.text,
+      displayName: message.displayName,
+      timeStamp: message.timeStamp.toISOString(),
+      gameId: message.gameId,
+    }).then(() => {});
+  }
+
+  listenForMessages(callback: (message: Message) => void): void {
+    const chatref = ref(this.db, `messages/`);
+    
+    onChildAdded(chatref, (snapshot) => {
+      callback(snapshot.val());
+    });
+  }
+
+  async cleanOldMessages() {
+    const chatref = ref(this.db, `messages/`);
+
+    try {
+      const snapshot = await get(chatref);
+      if (snapshot.exists()) {
+        const messages = snapshot.val();
+        const n = Date.now();
+
+        Object.keys(messages).forEach(async (messageId) => {
+          const message = messages[messageId];
+          const messageTime = new Date(message.timeStamp).getTime();
+
+          if (n - messageTime > 3600000) {
+            await remove(ref(this.db, `messages/${messageId}`));
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error cleaning messages:", error);
+    }
+  }
+
+  updateGame(gameId: string, updates: { title?: string; description?: string; netlifyUrl?: string; imageUrl?: string }): Promise<void>
+ {
+    return update(ref(this.getDatabase(), `games/${gameId}`), {
+      ...updates,
+      updatedAt: new Date().toISOString()
+    });
+  }
+
+  updateDisplayName(uid: string, newDisplayName: string): Promise<void> {
+    const authInstance = this.getAuth();
+    const user = authInstance.currentUser;
+
+    if (user && user.uid === uid) {
+      return updateProfile(user, { displayName: newDisplayName })
+        .then(() => {
+          return update(ref(this.getDatabase(), `users/${uid}`), { displayName: newDisplayName });
+        })
+        .then(() => user.reload())
+        .then(() => {
+          console.log('Updated displayName:', newDisplayName);
+          this.displayNameSubject.next(newDisplayName);
+        })
+        .catch(error => Promise.reject(error));
+    } else {
+      return Promise.reject('User not authenticated');
+    }
+  }
+
+  refreshDisplayName(uid: string): Promise<void> {
+    return this.getUserbyUID(uid)
+      .then((userData) => {
+        if (userData && userData.displayName) {
+          this.currentDisplayName = userData.displayName;
+          this.displayNameSubject.next(userData.displayName);
+        } else {
+          this.currentDisplayName = '';
+          this.displayNameSubject.next('');
+        }
+      })
+      .catch((error) => {
+        console.error('Error refreshing displayName:', error);
+        this.currentDisplayName = '';
+      });
+  }
+
+  clearDisplayName(): void {
+    this.currentDisplayName = '';
+    this.displayNameSubject.next('');    
+  }
+
+  updateUserPassword(uid: string, newPassword: string): Promise<void> {
+    const authInstance = this.getAuth();
+    const user = authInstance.currentUser;
+     
+    if (user && user.uid === uid) {
+      return updatePassword(user, newPassword);
+    } else {
+      return Promise.reject('User not authenticated');
+    }
+  }
+
+  saveThemeSettings(uid: string, settings: { backgroundColor: string; navbarColor: string }) {
+    document.body.style.backgroundColor = settings.backgroundColor;
+    document.querySelector('.navbar')?.setAttribute('style', `background-color: ${settings.navbarColor}`);
+    document.querySelector('.Navbar')?.setAttribute('style', `background-color: ${settings.navbarColor}`);
+    document.querySelector('.sidebar')?.setAttribute('style', `background-color: ${settings.navbarColor}`);
+
+    return set(ref(this.getDatabase(), `users/${uid}/theme`), settings);
   }
 }
