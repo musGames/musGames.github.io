@@ -1,4 +1,5 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
 import { FirebaseService } from '../services/firebase.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -26,7 +27,8 @@ export class NavbarComponent implements OnInit {
   constructor(
     private firebaseService: FirebaseService,
     private router: Router,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -35,19 +37,28 @@ export class NavbarComponent implements OnInit {
     // 🔥 Subscribe to reactive displayName stream
     const sub = this.firebaseService.currentDisplayName$.subscribe(name => {
       this.displayName = name;
+      this.changeDetectorRef.detectChanges();
     });
     this.subscriptions.push(sub);
 
     this.firebaseService.getAuthStateListener(async user => {
       this.isLoggedIn = !!user;
+      this.changeDetectorRef.detectChanges();
 
       if (user) {
         // 🔥 Trigger refresh so the BehaviorSubject updates
         await this.firebaseService.refreshDisplayName(user.uid);
+        this.changeDetectorRef.detectChanges();
 
         this.firebaseService.checkIfAdmin(user.uid)
-          .then(adminStatus => this.isAdmin = adminStatus)
-          .catch(() => this.isAdmin = false);
+          .then(adminStatus => {
+            this.isAdmin = adminStatus;
+            this.changeDetectorRef.detectChanges();
+          })
+          .catch(() => {
+            this.isAdmin = false;
+            this.changeDetectorRef.detectChanges();
+          });
 
         // 🟢 Hent og anvend brugerens theme direkte her
         try {
@@ -66,27 +77,35 @@ export class NavbarComponent implements OnInit {
               }
             }
           }
+
+          this.changeDetectorRef.detectChanges();
         } catch (err) {
           console.error("Error applying theme:", err);
+          this.changeDetectorRef.detectChanges();
         }
 
       } else {
         this.isAdmin = false;
         this.displayName = '';
+        this.changeDetectorRef.detectChanges();
       }
 
       this.updateBodyPadding();
+      this.changeDetectorRef.detectChanges();
     });
 
-    this.router.events.subscribe(event => {
+    const routerSub = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.updateBodyPadding();
         this.isMobileOpen = false; // luk sidebar ved navigation
+        this.changeDetectorRef.detectChanges();
       }
     });
+    this.subscriptions.push(routerSub);
 
     window.addEventListener('resize', () => {
       this.checkScreenWidth();
+      this.changeDetectorRef.detectChanges();
     });
   }
 
@@ -98,15 +117,18 @@ export class NavbarComponent implements OnInit {
   checkScreenWidth(): void {
     this.isMobile = window.innerWidth <= 768;
     this.updateBodyPadding();
+    this.changeDetectorRef.detectChanges();
   }
 
   toggleSidebarDesktop(): void {
     this.isMinimized = !this.isMinimized;
     this.updateBodyPadding();
+    this.changeDetectorRef.detectChanges();
   }
 
   toggleSidebarMobile(): void {
     this.isMobileOpen = !this.isMobileOpen;
+    this.changeDetectorRef.detectChanges();
   }
 
   updateBodyPadding(): void {
@@ -132,7 +154,11 @@ export class NavbarComponent implements OnInit {
       .then(() => {
         localStorage.clear();
         this.router.navigate(['/login']);
+        this.changeDetectorRef.detectChanges();
       })
-      .catch(console.error);
+      .catch(error => {
+        console.error(error);
+        this.changeDetectorRef.detectChanges();
+      });
   }
 }

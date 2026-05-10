@@ -210,6 +210,7 @@ export class FirebaseService {
       this.displayNameSubject.next('');
     });
   }
+
   clearDisplayName(): void {
     this.currentDisplayName = '';
     this.displayNameSubject.next('');
@@ -461,5 +462,45 @@ export class FirebaseService {
     document.querySelector('.sidebar')?.setAttribute('style', `background-color: ${settings.navbarColor}`);
 
     return set(ref(this.getDatabase(), `users/${uid}/theme`), settings);
+  }
+
+  saveImageMetadata(name: string, url: string): Promise<void> {
+    const db = this.getDatabase();
+    const id = Date.now().toString();
+
+    return set(ref(db, `uploadedImages/${id}`), {
+      name,
+      url,
+      createdAt: new Date().toISOString()
+    });
+  }
+
+  getImagesByName(searchTerm: string): Promise<{ id: string; name: string; url: string }[]> {
+    const db = this.getDatabase();
+    const imagesRef = ref(db, 'uploadedImages');
+
+    return get(imagesRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+
+        return Object.entries(data)
+          .map(([id, item]: [string, any]) => ({
+            id,
+            name: item.name,
+            url: item.url
+          }))
+          .filter((img) =>
+            img.name.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+      }
+
+      return [];
+    });
+  }
+
+  deleteImageMetadata(id: string): Promise<void> {
+    const db = this.getDatabase();
+
+    return set(ref(db, `uploadedImages/${id}`), null);
   }
 }

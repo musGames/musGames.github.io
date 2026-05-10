@@ -11,6 +11,8 @@ import { AuthGuard } from './guards/auth.guard';
 import { GameInterfaceComponent } from './game-interface/game-interface';
 import { SettingsComponent } from './settings/settings';
 import { uploadgameComponent } from './upload-game/upload-game';
+import { ImageUploaderComponent } from './image-uploader/image-uploader';
+import { NavbarComponent } from './navbar/navbar';
 
 export const routes: Routes = [
   {
@@ -20,12 +22,15 @@ export const routes: Routes = [
   },
   
     {path: 'login', component: Login },
-    {path: 'dashboard', component: DashboardComponent},
+    {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
     {path: 'signup', component: Signup},
     {path: 'forgot-password', component: ForgotPassword},
     {path: 'admin-dashboard', component: AdminDashboard, canActivate: [AdminGuard]},
-    {path: 'leaderboard', component: Leaderboard},
-    {path: 'game/:gameId', component: GameInterfaceComponent},
-    {path: 'settings', component: SettingsComponent},
-    {path: 'upload-game', component: uploadgameComponent}
+    {path: 'leaderboard', component: Leaderboard, canActivate: [AuthGuard]},
+    {path: 'game/:gameId', component: GameInterfaceComponent, canActivate: [AuthGuard]},
+    {path: 'settings', component: SettingsComponent, canActivate: [AuthGuard]},
+    {path: 'upload-game', component: uploadgameComponent, canActivate: [AdminGuard]},
+    {path: 'upload-image', component: ImageUploaderComponent, canActivate: [AdminGuard]},
+    {path: 'navbar', component: NavbarComponent, canActivate: [AuthGuard]},  
+
 ];
