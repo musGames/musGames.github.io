@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let user of admins">
-                <td>{{user.name}}</td>
+                <td>{{user.displayName}}</td>
                 <td>{{user.email}}</td>
 
                 <td>
@@ -52,8 +52,8 @@
         </thead>
 
         <tbody>
-            <tr *ngFor="let user of regularUsers">¨
-                <td>{{user.name}}</td>
+            <tr *ngFor="let user of regularUsers">
+                <td>{{user.displayName}}</td>
                 <td>{{user.email}}</td>
 
             <td>

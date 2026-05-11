@@ -33,9 +33,9 @@
     "@angular/cli": "21.2.9",
     "@angular/compiler-cli": "21.2.9",
     "@types/express": "^5.0.1",
-    "@types/node": "^20.17.19",
+    "@types/node": "^20.19.40",
     "jsdom": "^27.1.0",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vitest": "^4.0.8"
   }
 }

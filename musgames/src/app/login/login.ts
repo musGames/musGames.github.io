@@ -52,18 +52,19 @@ export class Login {
   private afterSuccess(cred: UserCredential):void {
     console.log('Login successful:', cred.user);
     this.errorMessage='';
+    
+//get user info from firebase
+   this.firebaseService.getUserbyUID(cred.user.uid)
+.then((userData: any) => {
+  const name = userData.displayName || 'Bruger';
 
-    //get user info from Firebase
-    this.firebaseService.getUserbyUID(cred.user.uid)
-    .then(userData => {
-      const name = userData.displayName || 'Bruger';
-      localStorage.setItem('uid', cred.user.uid);
-      localStorage.setItem('playerName',name);
-    })
-    .catch(() => {
-      localStorage.setItem('uid', cred.user.uid);
-      localStorage.setItem('playerName', cred.user.displayName || 'Bruger');
-    })
+  localStorage.setItem('uid', cred.user.uid);
+  localStorage.setItem('playerName', name);
+  localStorage.setItem('isAdmin', String(userData.isAdmin === true));
+
+  console.log('Login userData:', userData);
+  console.log('Login isAdmin:', userData.isAdmin);
+})
     .finally(() => {
 
       

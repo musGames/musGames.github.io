@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "my-game-portal-10af3"
-  }
+    "default": "my-game-portal-10af3",
+    "staging": "my-game-portal-10af3"
+  },
+  "targets": {},
+  "etags": {}
 }
