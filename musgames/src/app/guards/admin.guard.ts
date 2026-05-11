@@ -17,7 +17,7 @@ export class AdminGuard implements CanActivate {
 
         // If there is no user, redirect to admin login page
         if (!user) {
-          this.router.navigate(['/admin-dashboard']);
+          this.router.navigate(['/login']);
           resolve(false);
           return;
         }
