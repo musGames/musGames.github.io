@@ -3,7 +3,6 @@ import { FirebaseService } from '../services/firebase.service';
 import { get, ref, onValue} from 'firebase/database';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
 @Component({
   selector: 'app-leaderboard',
   imports: [FormsModule, CommonModule],
@@ -16,10 +15,7 @@ export class Leaderboard implements OnInit {
   games: any [] = [];
   selectedGameId: string = "";
 
-  constructor(
-    private firebaseService: FirebaseService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private firebaseService: FirebaseService) {}
   
   ngOnInit(): void {
     this.loadGames();
@@ -34,8 +30,6 @@ export class Leaderboard implements OnInit {
       this.games = Object.keys(snapshot.val()).map(key => {
         return { id: key, name: snapshot.val()[key].title };
       });
-
-      this.cdr.detectChanges();
     } else {
       console.log("Ingen spil fundet i firebase");
     }
@@ -46,7 +40,6 @@ export class Leaderboard implements OnInit {
       this.firebaseService.getHighscoresForGame(this.selectedGameId)
       .then(highscores => {
         this.highscores = this.highscores.sort((a, b) => b.score - a.score);
-        this.cdr.detectChanges();
       });
     }
   }
@@ -73,7 +66,6 @@ export class Leaderboard implements OnInit {
           }
 
           this.highscores.sort((a, b) => b.score - a.score);
-          this.cdr.detectChanges();
         }
       });
     }
