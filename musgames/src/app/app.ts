@@ -1,6 +1,7 @@
 import { Component , OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { FirebaseService } from './services/firebase.service'; // Make sure this is correct
+
 import { RouterModule } from '@angular/router';  // Import RouterModule
 import { CommonModule } from '@angular/common';  // Import CommonModule for directives like *ngIf
 import { NavbarComponent } from './navbar/navbar';

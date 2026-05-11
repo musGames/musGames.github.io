@@ -1,0 +1,6 @@
+<button class="logout-btn" (click)="logout()" [disabled]="isLoggingOut">
+  <img src="assets/signout.png" class="icon" />
+  <span class="text">
+    {{ isLoggingOut ? 'Logger ud...' : 'Log Out' }}
+  </span>
+</button>

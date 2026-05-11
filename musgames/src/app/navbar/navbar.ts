@@ -1,26 +1,25 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
-import { ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { FirebaseService } from '../services/firebase.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { getAuth, signOut } from 'firebase/auth';
 import { Subscription } from 'rxjs';
+import { Logout } from '../logout/logout';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, Logout],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   isAdmin = false;
   displayName = '';
-  isMinimized = false;     // desktop: sidebar minimering
-  isMobileOpen = false;    // mobil: burger toggle
-  isMobile = false;        // opdateres i checkScreenWidth()
+  isMinimized = false;
+  isMobileOpen = false;
+  isMobile = false;
 
   private subscriptions: Subscription[] = [];
 
@@ -34,7 +33,6 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.checkScreenWidth();
 
-    // 🔥 Subscribe to reactive displayName stream
     const sub = this.firebaseService.currentDisplayName$.subscribe(name => {
       this.displayName = name;
       this.changeDetectorRef.detectChanges();
@@ -46,7 +44,6 @@ export class NavbarComponent implements OnInit {
       this.changeDetectorRef.detectChanges();
 
       if (user) {
-        // 🔥 Trigger refresh so the BehaviorSubject updates
         await this.firebaseService.refreshDisplayName(user.uid);
         this.changeDetectorRef.detectChanges();
 
@@ -60,9 +57,9 @@ export class NavbarComponent implements OnInit {
             this.changeDetectorRef.detectChanges();
           });
 
-        // 🟢 Hent og anvend brugerens theme direkte her
         try {
           const userData = await this.firebaseService.getUserbyUID(user.uid);
+
           if (userData?.theme) {
             const bg = userData.theme.backgroundColor;
             const nav = userData.theme.navbarColor;
@@ -70,8 +67,10 @@ export class NavbarComponent implements OnInit {
             if (bg) {
               document.body.style.backgroundColor = bg;
             }
+
             if (nav) {
               const navEl = document.querySelector('.Navbar') as HTMLElement | null;
+
               if (navEl) {
                 navEl.style.backgroundColor = nav;
               }
@@ -79,8 +78,9 @@ export class NavbarComponent implements OnInit {
           }
 
           this.changeDetectorRef.detectChanges();
+
         } catch (err) {
-          console.error("Error applying theme:", err);
+          console.error('Error applying theme:', err);
           this.changeDetectorRef.detectChanges();
         }
 
@@ -97,7 +97,7 @@ export class NavbarComponent implements OnInit {
     const routerSub = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.updateBodyPadding();
-        this.isMobileOpen = false; // luk sidebar ved navigation
+        this.isMobileOpen = false;
         this.changeDetectorRef.detectChanges();
       }
     });
@@ -110,7 +110,6 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    // clean up subscriptions
     this.subscriptions.forEach(s => s.unsubscribe());
   }
 
@@ -146,19 +145,5 @@ export class NavbarComponent implements OnInit {
     } else {
       this.renderer.removeStyle(document.body, 'padding-left');
     }
-  }
-
-  logout(): void {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        localStorage.clear();
-        this.router.navigate(['/login']);
-        this.changeDetectorRef.detectChanges();
-      })
-      .catch(error => {
-        console.error(error);
-        this.changeDetectorRef.detectChanges();
-      });
   }
 }

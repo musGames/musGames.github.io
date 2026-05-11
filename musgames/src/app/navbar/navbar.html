@@ -51,12 +51,9 @@
             </a>
         </li>
         
-        <li *ngIf="isLoggedIn">
-            <button class="logout-btn" (click)="logout()">
-                <img src="assets/signout.png" class="icon" />
-                <span class="text" *ngIf="!isMinimized">Log Out</span>
-            </button>
-        </li>
+<li *ngIf="isLoggedIn">
+  <app-logout></app-logout>
+</li>
 
         <li *ngIf="isAdmin">
             <a [routerLink]="['/upload-game']" routerLinkActive="active">
