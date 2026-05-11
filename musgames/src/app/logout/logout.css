@@ -1,0 +1,57 @@
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+
+  background: none;
+  border: none;
+  color: white;
+
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+}
+
+.text {
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+:host-context(.Navbar.minimized) .logout-btn {
+  justify-content: center;
+}
+
+:host-context(.Navbar.minimized) .text {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .logout-btn {
+    font-size: 0.9rem;
+    gap: 10px;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+}
