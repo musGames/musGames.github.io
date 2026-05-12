@@ -2,10 +2,10 @@
     <div class="login-box">
         <h2>Login</h2>
 
-
+        <!-- login form -->
        <form (submit)="login($event)">
-        <div class="input-group">
-          <input type="email"
+        <div class="input-group"> 
+        <input type="email"
            name="email"
            placeholder="E-mail"
            [value]="email"
@@ -14,6 +14,7 @@
             required />
         </div>
 
+         <!-- password input -->
         <div class="input-group">
             <input 
              type="password"
@@ -26,20 +27,23 @@
     
         </div>
         
-        
+         <!-- login button -->
         <button class="login-btn" type="submit">Login</button>
        </form> 
 
+       <!-- goes to signup page -->
        <p class="sign-up">
         Don't have an account?
         <button class="signup-button" type="button" (click)="goToSignup()">Signup</button>
        </p>
 
+        <!-- forgot password section -->
        <p class="forgot-password-text"> 
         <button class="forgot-password-button" type="button" (click)="forgotPassword()">Forgot Password?</button>
        </p>
     </div>
 
+    <!--shows error message if there is one-->
     <div *ngIf="errorMessage" class="error-box"> {{errorMessage}}</div>
 
 

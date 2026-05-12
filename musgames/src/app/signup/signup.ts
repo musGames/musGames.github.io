@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrl: './signup.css',
 })
 export class Signup {
+  //user information 
   name: string= '';
   email: string='';
   emailConfirm: string='';
@@ -43,16 +44,19 @@ updatePasswordConfirm(event:any):void{
   this.passwordConfirm=event.target.value;
 }
 
+//check if any input is empty
 register(): void{
   if(!this.name || !this.email || !this.emailConfirm || !this.password || !this.passwordConfirm){
     alert('All fields are requiered')
   }
 
+  //check if both emails are same
 if(this.email !== this.emailConfirm){
   alert('Emails do not match');
   return;
 }
 
+//check if both pass are same
 if(this.password !== this.passwordConfirm){
   alert('Passwords do not match');
   return;
@@ -61,7 +65,7 @@ if(this.password !== this.passwordConfirm){
 
 const isAdmin=false; // set true if you want user to be an admin
 
-
+//creatre normal user acc
 this.firebaseService.registerUser(this.email, this.password, this.name)
 .then(() => {
   alert('Signup successful! Please check your email for the verification link');
@@ -72,6 +76,7 @@ this.firebaseService.registerUser(this.email, this.password, this.name)
 });
 }
 
+//goes to login page
 goToLogin(): void{
   this.router.navigate(['/login']);
 
