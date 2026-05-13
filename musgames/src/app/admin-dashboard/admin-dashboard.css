@@ -18,7 +18,7 @@
     justify-content: flex-end;
     margin-bottom: 20px;
 }
-
+/* search input*/
 .search-bar input{
     padding: 10px 15px;
     border-radius: 25px;
@@ -28,13 +28,13 @@
     transition: border-color 0.3s ease;
 }
 
-
+/*changes border color when clicked*/
 .search-bar input:focus {
     border-color: currentColor;
     outline: none;
 }
 
-/*table layout*/
+/*holds all tables and their layout*/
 .tables-container{
     display: flex;
     gap: 20px;
@@ -42,6 +42,7 @@
     flex-wrap: wrap;
 }
 
+/*table box*/
 .user-table{
     flex:1;
     min-width: 300px;
@@ -52,7 +53,7 @@
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
-
+/*table title*/
 .user-table h2 {
     text-align: center;
     margin-bottom: 15px;
@@ -60,21 +61,24 @@
     color: inherit;
 
 }
-
+/*table*/
 table{
     width: 100%;
     border-collapse: collapse;
 }
 
+/*space inside the table*/
 th,td{
     padding: 12px;
     text-align: left;
 }
 
+/*adds color to every second row*/
 tr:nth-child(even) {
   background-color: rgba(0,0,0,0.05);
 }
 
+/*makes row darker on hover*/
 tr:hover {
   background-color: rgba(0,0,0,0.1);
 }
@@ -87,12 +91,14 @@ tr:hover {
   height: 28px;
 }
 
+/*hides default checkbox*/
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
+/*background of switch*/
 .slider {
   position: absolute;
   cursor: pointer;
@@ -102,6 +108,7 @@ tr:hover {
   border-radius: 50px;
 }
 
+/*white circle inside switch*/
 .slider:before {
   position: absolute;
   content: "";
@@ -114,10 +121,12 @@ tr:hover {
   transition: 0.4s;
 }
 
+/*changes switch to green*/
 input:checked + .slider {
   background-color: #4CAF50;
 }
 
+/*moves white circle to the side*/
 input:checked + .slider:before {
   transform: translateX(22px);
 }
@@ -133,6 +142,7 @@ input:checked + .slider:before {
   margin-left: 10px;
 }
 
+/*makes delete button darker*/
 .delete-button:hover {
   background-color: #e53935;
 }

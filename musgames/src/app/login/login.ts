@@ -67,8 +67,10 @@ export class Login {
 })
     .finally(() => {
 
-      
-      this.router.navigate(['/dashboard']);
+   this.router.navigate(['/dashboard']).then(() => {
+  window.location.href = '/#/dashboard';
+});
+
     });
   }
 
