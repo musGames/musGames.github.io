@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "Node16",
+    "module": "commonjs",
     "noImplicitReturns": true,
     "noUnusedLocals": false,
     "rootDir": "src",
@@ -9,7 +9,7 @@
     "strict": true,
     "target": "es2017",
     "esModuleInterop": true,
-    "moduleResolution": "node16",
+    "moduleResolution": "node",
     "skipLibCheck": true,
     "types": [
       "node"

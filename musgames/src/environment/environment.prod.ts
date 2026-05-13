@@ -11,6 +11,5 @@ export const environment = {
     appId: "DIN_FIREBASE_APP_ID"
   },
 
-  // ← DEPLOYEDET cloud function URL
-  cloudinarySignFnUrl: "https://europe-west1-my-game-portal-10af3.cloudfunctions.net/getCloudinarySignature"
+  cloudinarySignFnUrl: "https://getcloudinarysignature-kue75vprba-ew.a.run.app"
 };

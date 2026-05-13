@@ -18,7 +18,8 @@ const allowedOrigins = [
 export const getCloudinarySignature = onRequest(
   {
     region: "europe-west1",
-    cors: allowedOrigins
+    cors: allowedOrigins,
+    invoker: "public"
   },
   async (req, res) => {
     if (req.method !== "POST") {
