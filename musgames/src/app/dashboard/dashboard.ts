@@ -162,7 +162,7 @@ export class DashboardComponent implements OnInit {
           if (typeof game.plays !== 'number') {
             const gameRef = ref(db, `games/${gameId}`);
             updates.push(update(gameRef, { plays: 0 }));
-            console.log(`✅ Tilføjede 'plays: 0' til spillet ${game.title}`);
+            console.log(` Tilføjede 'plays: 0' til spillet ${game.title}`);
           }
         }
 
@@ -171,17 +171,17 @@ export class DashboardComponent implements OnInit {
         if (updates.length === 0) {
           console.log('Alle spil har allerede feltet "plays".');
         } else {
-          console.log(`🎉 Tilføjede 'plays' til ${updates.length} spil.`);
+          console.log(` Tilføjede 'plays' til ${updates.length} spil.`);
         }
 
         this.changeDetectorRef.detectChanges();
       } else {
-        console.log('⚠️ Der findes ingen spil i databasen.');
+        console.log(' Der findes ingen spil i databasen.');
 
         this.changeDetectorRef.detectChanges();
       }
     } catch (error) {
-      console.error('❌ Fejl ved tilføjelse af "plays"-felter:', error);
+      console.error(' Fejl ved tilføjelse af "plays"-felter:', error);
 
       this.changeDetectorRef.detectChanges();
     }

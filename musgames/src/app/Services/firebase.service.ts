@@ -282,7 +282,7 @@ export class FirebaseService {
         await Promise.all(updates);
       }
     } catch (error) {
-      console.error('❌ Fejl ved tilføjelse af "plays"-felter:', error);
+      console.error(' Fejl ved tilføjelse af "plays"-felter:', error);
     }
   }
 
@@ -344,7 +344,7 @@ export class FirebaseService {
 
       if (existingKey) {
         if (score > existingScore) {
-          console.log("⬆️ Ny score er højere – opdaterer.");
+          console.log(" Ny score er højere – opdaterer.");
           console.log("Sender highscore:", { displayName, email, gameTitle, score, games_Id });
 
           return update(ref(this.db, `highscores/${existingKey}`), {
@@ -353,11 +353,11 @@ export class FirebaseService {
             timestamp: new Date().toISOString()
           });
         } else {
-          console.log("⬇️ Ny score er lavere – ignorerer.");
+          console.log(" Ny score er lavere – ignorerer.");
           return Promise.resolve();
         }
       } else {
-        console.log("🆕 Ingen tidligere score – opretter ny.");
+        console.log(" Ingen tidligere score – opretter ny.");
         console.log("Sender highscore:", { displayName, email, gameTitle, score, games_Id });
 
         const newKey = Date.now();

@@ -123,11 +123,11 @@ export class GameInterfaceComponent implements AfterViewInit, OnDestroy {
       if (this.unityAcknowledged || this.resendAttempts >= this.maxAttempts) {
         clearInterval(this.resendInterval);
         if (!this.unityAcknowledged)
-          console.warn('⚠️ Unity never acknowledged player data after 3 attempts.');
+          console.warn(' Unity never acknowledged player data after 3 attempts.');
         return;
       }
       this.resendAttempts++;
-      console.log(`🔁 Attempt #${this.resendAttempts} to resend UID & playerName to Unity...`);
+      console.log(` Attempt #${this.resendAttempts} to resend UID & playerName to Unity...`);
       this.sendStoredDataToUnity();
     }, 5000);
   }
@@ -144,19 +144,19 @@ export class GameInterfaceComponent implements AfterViewInit, OnDestroy {
 
     const iframe = document.querySelector('iframe') as HTMLIFrameElement;
     iframe?.contentWindow?.postMessage({ type: 'SET_PLAYER_DATA', uid, name: playerName }, '*');
-    console.log('📤 Sent UID & Player Name to Unity:', uid, playerName);
+    console.log(' Sent UID & Player Name to Unity:', uid, playerName);
   }
 
   /* ---------- Unity-events ---------- */
   private handleUnityMessages(event: MessageEvent) {
     if (event.data === 'UNITY_ACK') {
-      console.log('✅ Received UNITY_ACK from Unity');
+      console.log(' Received UNITY_ACK from Unity');
       this.unityAcknowledged = true;
       return;
     }
 
     if (event.data?.type === 'UPDATE_HIGHSCORE') {
-      console.log('🎯 Received high score data from Unity:', event.data.data);
+      console.log(' Received high score data from Unity:', event.data.data);
       this.pushHighscoreToFirebase(event.data.data);
     }
   }
@@ -166,14 +166,14 @@ export class GameInterfaceComponent implements AfterViewInit, OnDestroy {
     const { userId, score } = highscoreData;
     const storedUid = localStorage.getItem('uid');
     if (!storedUid || storedUid !== userId) {
-      console.error('❌ Invalid userId received from Unity:', userId);
+      console.error(' Invalid userId received from Unity:', userId);
       return;
     }
 
     const gameTitle = this.game?.title;
     const gameId = this.gameId;
     if (!gameTitle || !gameId) {
-      console.error('❌ Missing game information – cannot save highscore.');
+      console.error(' Missing game information – cannot save highscore.');
       return;
     }
 
@@ -189,9 +189,9 @@ export class GameInterfaceComponent implements AfterViewInit, OnDestroy {
         score,
         gameId
       );
-      console.log('✅ Highscore saved to Firebase (automatic)');
+      console.log(' Highscore saved to Firebase (automatic)');
     } catch (err) {
-      console.error('❌ Error while saving highscore:', err);
+      console.error(' Error while saving highscore:', err);
     }
   }
 
@@ -204,7 +204,7 @@ export class GameInterfaceComponent implements AfterViewInit, OnDestroy {
       const snapshot = await get(gameRef);
   
       if (!snapshot.exists()) {
-        console.error('⚠️ No game found with ID:', gameId);
+        console.error(' No game found with ID:', gameId);
         return;
       }
   
@@ -215,9 +215,9 @@ export class GameInterfaceComponent implements AfterViewInit, OnDestroy {
       // 🔥 Registrer ét view/spil
       await this.firebaseService.incrementPlays(gameId);
   
-      console.log('✅ Game fetched:', this.game);
+      console.log(' Game fetched:', this.game);
     } catch (error) {
-      console.error('❌ Error fetching game:', error);
+      console.error(' Error fetching game:', error);
     }
   }
   
@@ -231,7 +231,7 @@ export class GameInterfaceComponent implements AfterViewInit, OnDestroy {
     const urlWithParams =
       `${baseUrl}?uid=${encodeURIComponent(uid)}&name=${encodeURIComponent(playerName)}`;
     this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(urlWithParams);
-    console.log('🔗 iframe URL:', urlWithParams);
+    console.log(' iframe URL:', urlWithParams);
   }
 
   /* ===================================================
@@ -253,9 +253,9 @@ saveEdits() {
       this.updateSafeUrl();         // opdatér iframe hvis URL blev ændret
       this.showEditor = false;
       this.changeDetectorRef.detectChanges();
-      console.log('✅ Game changes saved');
+      console.log(' Game changes saved');
     })
-    .catch(err => console.error('❌ Kunne ikke gemme spil-redigering:', err));
+    .catch(err => console.error(' Kunne ikke gemme spil-redigering:', err));
 }
 
 
@@ -264,7 +264,7 @@ saveEdits() {
   }
 
     /* ===================================================
-     🗑️  Ryd CacheStorage (kun admin-knap)
+      Ryd CacheStorage (kun admin-knap)
      =================================================== */
      public async clearUnityCacheStorage(prefix = 'UnityCache_'): Promise<void> {
 
@@ -288,7 +288,7 @@ saveEdits() {
       if ('serviceWorker' in navigator) {
         const regs = await navigator.serviceWorker.getRegistrations();
         await Promise.all(regs.map(r => r.unregister()));
-        console.log('⛔️  Afregistrerede service-workers');
+        console.log('  Afregistrerede service-workers');
       }
   
       /* 5. (Valgfrit) ryd IndexedDB “UnityCache” */
@@ -299,7 +299,7 @@ saveEdits() {
             .filter((d: any) => d.name?.startsWith('UnityCache'))
             .map((d: any) => indexedDB.deleteDatabase(d.name))
         );
-        console.log('🗑️  Slettede Unity IndexedDB-databaser');
+        console.log('  Slettede Unity IndexedDB-databaser');
       }
   
       /* 6. Genindlæs */

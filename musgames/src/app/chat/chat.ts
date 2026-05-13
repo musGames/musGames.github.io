@@ -17,7 +17,7 @@ import { FirebaseService } from '../services/firebase.service';
   templateUrl: './chat.html',
   styleUrl: './chat.css',
 })
-// Alexander 24-03-25
+
 export class ChatComponent implements AfterViewInit, AfterViewChecked {
   msg: Message[] = [];
   input: string = '';
@@ -91,4 +91,3 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
   }
   //#endregion
 }
-// Alexander 24-03-25

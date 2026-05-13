@@ -1,4 +1,4 @@
-// Alexander 01-04-2025
+
 export class Message {
     text: string;
     displayName: string;
@@ -12,4 +12,3 @@ export class Message {
       this.timeStamp = new Date();
     }
 }
-// Alexander 01-04-2025
