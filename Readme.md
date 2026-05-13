@@ -268,3 +268,12 @@ ng serve
 ```text
 http://localhost:4200
 ```
+
+
+
+## Hvis projektet stadig ikke virker
+
+Tjek at mappen med Firebase service-filen hedder præcis:
+
+```text
+services
