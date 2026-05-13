@@ -48,7 +48,9 @@ updatePasswordConfirm(event:any):void{
 register(): void{
   if(!this.name || !this.email || !this.emailConfirm || !this.password || !this.passwordConfirm){
     alert('All fields are requiered')
+    return;
   }
+
 
   //check if both emails are same
 if(this.email !== this.emailConfirm){
@@ -65,20 +67,26 @@ if(this.password !== this.passwordConfirm){
 
 const isAdmin=false; // set true if you want user to be an admin
 
-//creatre normal user acc
+//create normal user acc
 this.firebaseService.registerUser(this.email, this.password, this.name)
 .then(() => {
-  alert('Signup successful! Please check your email for the verification link');
-  this.router.navigate(['/login']);
-})
-.catch((error) => {
-  alert('Error' + error.message)
-});
+  confirm('Signup successful! Please check your email for the verification link');
+
+      window.location.href = '/#/login';
+    })
+  .catch((error) => {
+    console.error('Signup error:', error);
+    alert('Signup failed: ' + (error?.message || error?.code || 'Unknown error'));
+  });
+
 }
 
 //goes to login page
 goToLogin(): void{
   this.router.navigate(['/login']);
+      window.location.href = '/#/login';
+
+
 
 }
 
