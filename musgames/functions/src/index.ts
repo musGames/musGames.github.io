@@ -12,7 +12,7 @@ cloudinary.config({
 
 const allowedOrigins = [
   "http://localhost:4200",
-  "https://arcade-io.github.io"
+  "https://musgames.github.io"
 ];
 
 export const getCloudinarySignature = onRequest(
@@ -21,13 +21,10 @@ export const getCloudinarySignature = onRequest(
     cors: allowedOrigins
   },
   async (req, res) => {
-    if (req.method === "OPTIONS") {
-      res.status(204).send("");
-      return;
-    }
-
     if (req.method !== "POST") {
-      res.status(405).json({ error: "Only POST allowed" });
+      res.status(405).json({
+        error: "Only POST allowed"
+      });
       return;
     }
 
@@ -36,7 +33,30 @@ export const getCloudinarySignature = onRequest(
       const uid = body?.public_id;
 
       if (!uid || typeof uid !== "string") {
-        res.status(400).json({ error: "public_id (uid) is required" });
+        res.status(400).json({
+          error: "public_id (uid) is required"
+        });
+        return;
+      }
+
+      if (!process.env.CLOUDINARY_CLOUD_NAME) {
+        res.status(500).json({
+          error: "Missing CLOUDINARY_CLOUD_NAME"
+        });
+        return;
+      }
+
+      if (!process.env.CLOUDINARY_API_KEY) {
+        res.status(500).json({
+          error: "Missing CLOUDINARY_API_KEY"
+        });
+        return;
+      }
+
+      if (!process.env.CLOUDINARY_API_SECRET) {
+        res.status(500).json({
+          error: "Missing CLOUDINARY_API_SECRET"
+        });
         return;
       }
 
@@ -52,7 +72,7 @@ export const getCloudinarySignature = onRequest(
 
       const signature = cloudinary.utils.api_sign_request(
         paramsToSign,
-        process.env.CLOUDINARY_API_SECRET as string
+        process.env.CLOUDINARY_API_SECRET
       );
 
       res.status(200).json({
@@ -64,7 +84,10 @@ export const getCloudinarySignature = onRequest(
       });
     } catch (err: any) {
       console.error("Signature error:", err?.message || err);
-      res.status(500).json({ error: err?.message || "Unknown error" });
+
+      res.status(500).json({
+        error: err?.message || "Unknown error"
+      });
     }
   }
 );
