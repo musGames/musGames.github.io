@@ -68,10 +68,7 @@ export class Login {
     .finally(() => {
 
       
-      //go to dashboard and force refresh
-      this.router.navigate(['/dashboard']).then(() => {
-        location.reload();
-      });
+      this.router.navigate(['/dashboard']);
     });
   }
 
