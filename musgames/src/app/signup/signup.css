@@ -1,35 +1,20 @@
-/*removes default spacing from the browser*/
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/*centers signup page*/
-body{
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-}
-
 /*main signup container*/
-.signup-container{
+.signup-container {
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
+    color: var(--app-fg);
 }
 
 /*signup box*/
-.signup-box{
-    background-color: transparent;
+.signup-box {
+    background-color: rgba(128, 128, 128, 0.253);
     padding: 30px;
     border-radius: 50px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     width: 100%;
     max-width: 350px;
     min-height: 420px;
@@ -39,85 +24,99 @@ body{
     text-align: center;
     color: var(--app-fg);
 }
+
 /*place holder text color*/
-input::placeholder{
-    color: black;
+input::placeholder {
+    color: var(--input-placeholder-fg, var(--app-fg));
     opacity: 1;
 }
 
 /*header*/
-h2{
-    color: black;
+h2 {
+    color: var(--app-fg);
     margin-bottom: 20px;
 }
 
 /*space between inputs*/
-.input-group{
+.input-group {
     margin-bottom: 15px;
 }
 
 /*input fields*/
-input{
+input {
     background-color: transparent;
     width: 100%;
     padding: 12px;
-    border: none;
+    border: 1px solid var(--input-border, rgba(255, 255, 255, 0.18));
     border-radius: 25px;
     font-size: 16px;
     margin-bottom: 10px;
-    transition: box-shadow 0.2s ease;
-    color: var(--app-fg);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    color: var(--input-fg, var(--app-fg));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
+
 /*changes border color when input is clicked*/
-input:focus{
- outline: none;
- box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18),  
- 0 0 0 2px var(--app-fg);
+input:focus {
+    outline: 3px solid var(--input-focus-outline, rgba(106, 125, 255, 0.28));
+    outline-offset: 2px;
+    border-color: var(--input-focus-border, #6a7dff);
+    color: var(--input-fg, var(--app-fg));
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
 }
 
 /*signup button*/
-.signup-btn{
+.signup-btn {
     width: 100%;
     padding: 12px;
     background-color: transparent;
-    border: none;
+    border: 1px solid var(--input-border, rgba(255, 255, 255, 0.18));
     border-radius: 25px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.06s ease,
-    color 0.2s ease;
-    color: var(--app-fg);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.06s ease, color 0.2s ease, border-color 0.2s ease;
+    color: var(--input-fg, var(--app-fg));
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
 }
- 
+
 /*makes signup button darker when mouse is over*/
-.signup-btn:hover{
-    background: linear-gradient(145deg, #0000003b, #00000049);
+.signup-btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: var(--input-focus-border, #6a7dff);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+/*small click effect*/
+.signup-btn:active {
+    transform: translateY(1px);
+}
+
+/*focus effect for signup button*/
+.signup-btn:focus {
+    outline: 3px solid var(--input-focus-outline, rgba(106, 125, 255, 0.28));
+    outline-offset: 2px;
+    border-color: var(--input-focus-border, #6a7dff);
 }
 
 /*login text */
 .login-text {
     text-align: center;
     margin-top: 15px;
-    color: white;
+    color: var(--app-fg);
 }
 
 /*login button*/
-.login-btn{
+.login-btn {
     background: none;
-    color: #070707;
+    color: var(--app-fg);
     border: none;
     font-size: 16px;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, text-decoration 0.2s ease;
 }
 
 /*changes login button color when mouse is over*/
-.login-btn:hover{
-    color: #3f72b5;
+.login-btn:hover {
+    color: var(--input-focus-border, #6a7dff);
     text-decoration: underline;
-
 }

@@ -1,64 +1,82 @@
-<div class="dashboard-container">
-  <div class="Navbar">
-    <ul>
-      <li><a href="javascript:void(0)" (click)="optionChangePassword()">Change Password</a></li>
-      <li><a href="javascript:void(0)" (click)="optionChangeDisplayName()">Change Username</a></li>
-      <li><a href="javascript:void(0)" (click)="optionChangeTheme()">Change Theme</a></li>
-      <li><a href="javascript:void(0)" (click)="optionChangeProfilePic()">Change Profile Picture</a></li>
-    </ul>
-  </div>
+<div class="settings-wrapper">
+  <div class="settings-content">
 
-  <div class="content">
-
-    <!-- Change Password Section -->
-    <div *ngIf="isChangePassword">
-      <h2>Change Password</h2>
-      <div class="input-group">
-        <input type="password" [value]="newPassword" (input)="updatePassword($event)" placeholder="New Password"/>
-      </div>
-      <div class="input-group">
-        <input type="password" [value]="confirmPassword" (input)="updateConfirmPassword($event)" placeholder="Confirm Password"/>
-      </div>
-      <button (click)="submitNewPassword()">Submit</button>
+    <div class="settings-header">
+      <h1>Settings</h1>
+      <p>Change your account, profile and theme settings</p>
     </div>
 
-    <!-- Change Username Section -->
-    <div *ngIf="isChangeDisplayName">
-      <h2>Change Username</h2>
-      <p>Current Username: {{ currentDisplayName || 'Not set' }}</p><br/>
-      <div class="input-group">
-        <input type="text" [value]="newDisplayName" (input)="updateDisplayName($event)" placeholder="New Username"/>
-      </div>
-      <button (click)="submitNewDisplayName()">Submit</button>
-    </div>
+    <div class="settings-grid">
 
-    <!-- Change Theme Section -->
-    <div *ngIf="isChangeTheme">
-      <h2>Change Theme</h2>
-      <div>
-        <label for="bgColor">Background Color: </label>
-        <input type="color" id="bgColor" [value]="backgroundColor" (input)="updateBackgroundColor($event)"/>
-      </div>
-      <div>
-        <label for="navbarColor">Navbar Color: </label>
-        <input type="color" id="navbarColor" [value]="navbarColor" (input)="updateNavbarColor($event)"/>
-      </div>
-      <br/>
-      <button (click)="saveThemeSettings()">Save Theme</button>
-    </div>
+      <!-- Change Password Section -->
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <h2>Change Password</h2>
+          <p>Update your account password</p>
+        </div>
 
-    <!-- Change Profile Picture Section -->
-    <div *ngIf="isChangeProfilePic">
-      <h2>Change Profile Picture</h2>
+        <div class="input-group">
+          <input type="password" [value]="newPassword" (input)="updatePassword($event)" placeholder="New Password"/>
+        </div>
 
-      <div class="profile-picture-upload">
-        <img [src]="user.photoURL || 'assets/default-avatar.png'" alt="Profile Picture" class="avatar-preview"/>
-        <input type="file" (change)="onFileSelected($event)" accept="image/*"/>
+        <div class="input-group">
+          <input type="password" [value]="confirmPassword" (input)="updateConfirmPassword($event)" placeholder="Confirm Password"/>
+        </div>
+
+        <button (click)="submitNewPassword()">Submit</button>
       </div>
 
-      <button (click)="uploadProfilePicture()" [disabled]="!selectedFile || uploading">
-        {{ uploading ? 'Uploading...' : 'Upload' }}
-      </button>
+      <!-- Change Username Section -->
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <h2>Change Username</h2>
+          <p>Current Username: {{ currentDisplayName || 'Not set' }}</p>
+        </div>
+
+        <div class="input-group">
+          <input type="text" [value]="newDisplayName" (input)="updateDisplayName($event)" placeholder="New Username"/>
+        </div>
+
+        <button (click)="submitNewDisplayName()">Submit</button>
+      </div>
+
+      <!-- Change Theme Section -->
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <h2>Change Theme</h2>
+          <p>Change the background and navbar colors</p>
+        </div>
+
+        <div class="color-row">
+          <label for="bgColor">Background Color</label>
+          <input type="color" id="bgColor" [value]="backgroundColor" (input)="updateBackgroundColor($event)"/>
+        </div>
+
+        <div class="color-row">
+          <label for="navbarColor">Navbar Color</label>
+          <input type="color" id="navbarColor" [value]="navbarColor" (input)="updateNavbarColor($event)"/>
+        </div>
+
+        <button (click)="saveThemeSettings()">Save Theme</button>
+      </div>
+
+      <!-- Change Profile Picture Section -->
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <h2>Change Profile Picture</h2>
+          <p>Upload a new profile image</p>
+        </div>
+
+        <div class="profile-picture-upload">
+          <img [src]="user.photoURL || 'assets/default-avatar.png'" alt="Profile Picture" class="avatar-preview"/>
+          <input type="file" (change)="onFileSelected($event)" accept="image/*"/>
+        </div>
+
+        <button (click)="uploadProfilePicture()" [disabled]="!selectedFile || uploading">
+          {{ uploading ? 'Uploading...' : 'Upload' }}
+        </button>
+      </div>
+
     </div>
 
   </div>

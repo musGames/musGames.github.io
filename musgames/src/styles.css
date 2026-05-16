@@ -5,7 +5,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inconsolata', sans-serif;
 }
 
 /* Sørg for 100% højde i hele dokumentet */
@@ -13,6 +12,8 @@ html, body {
   height: 100vh;
   width: 100vw;
   overflow-x: hidden;
+  font-family: 'Inconsolata', sans-serif;
+
 }
 
 /* CSS-variabler til theme */
@@ -38,7 +39,7 @@ a {
   text-decoration: none;
 }
 
-/* Hover-feedback på links (valgfrit) */
+/* Hover-feedback på links */
 a:hover {
   text-decoration: underline;
 }
@@ -57,7 +58,7 @@ a:hover {
   color: inherit;
 }
 
-/* Links i Navbar samme hover-adfærd (valgfrit) */
+/* Links i Navbar samme hover-adfærd */
 .Navbar a:hover {
   text-decoration: underline;
 }

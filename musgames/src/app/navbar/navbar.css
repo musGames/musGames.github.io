@@ -3,7 +3,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;
+  height: 95vh;
   width: 200px;
   display: flex;
   flex-direction: column;
@@ -11,6 +11,9 @@
   transition: all 0.3s ease;
   z-index: 1000;
   overflow-y: auto;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 30px;
+  margin-top: 2.5vh;
 }
 
 /* Minimeret desktop */
@@ -19,10 +22,14 @@
 }
 
 /* Logo */
-.Navbar .logo img {
+.Navbar{
   width: 100%;
-  max-width: 120px;
+  max-width: 200px;
   margin-bottom: 2rem;
+}
+.logo img {
+  width: 100%;
+  height: auto;
 }
 
 /* Navigation */

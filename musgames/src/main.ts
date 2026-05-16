@@ -11,14 +11,18 @@ const firebaseApp = initializeApp(environment.firebaseConfig);
 const auth = getAuth(firebaseApp);
 const database = getDatabase(firebaseApp);
 
-// Beregn om farven er mørk eller lys (returnerer true hvis mørk)
+// Beregn om farven er mørk eller lys returnerer true hvis mørk
 function isDark(hexColor: string): boolean {
   if (!hexColor || typeof hexColor !== 'string') return false;
+
   const hex = hexColor.trim();
+
   if (!hex.startsWith('#')) return false;
 
-  // Understøt #RGB og #RRGGBB
-  let r = 0, g = 0, b = 0;
+  let r = 0;
+  let g = 0;
+  let b = 0;
+
   if (hex.length === 4) {
     r = parseInt(hex[1] + hex[1], 16);
     g = parseInt(hex[2] + hex[2], 16);
@@ -32,29 +36,43 @@ function isDark(hexColor: string): boolean {
   }
 
   const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+
   return luminance < 128;
 }
 
-// Sæt CSS-variabler for fontfarver ud fra theme
+// Sæt CSS variabler for fontfarver og input styling ud fra theme
 function applyFontColors(theme: { backgroundColor?: string; navbarColor?: string }) {
   const root = document.documentElement.style;
 
-  // Global BODY/indhold — styr KUN fontfarven via --app-fg (din CSS bruger color: var(--app-fg))
   if (theme.backgroundColor) {
     const dark = isDark(theme.backgroundColor);
+
     root.setProperty('--app-fg', dark ? '#ffffff' : '#000000');
 
-    // valgfrit: behold din eksisterende body-baggrund (ingen layoutændringer)
+    if (dark) {
+      root.setProperty('--input-fg', '#ffffff');
+      root.setProperty('--input-placeholder-fg', 'rgba(255, 255, 255, 0.65)');
+      root.setProperty('--input-border', 'rgba(255, 255, 255, 0.22)');
+      root.setProperty('--input-focus-border', '#8f9cff');
+      root.setProperty('--input-focus-outline', 'rgba(143, 156, 255, 0.35)');
+    } else {
+      root.setProperty('--input-fg', '#000000');
+      root.setProperty('--input-placeholder-fg', 'rgb(0, 0, 0)');
+      root.setProperty('--input-border', 'rgba(0, 0, 0, 0.22)');
+      root.setProperty('--input-focus-border', '#040029');
+      root.setProperty('--input-focus-outline', 'rgba(4, 0, 41, 0.28)');
+    }
+
     document.body.style.backgroundColor = theme.backgroundColor;
   }
 
-  // NAVBAR — styr KUN fontfarven via --navbar-fg (din CSS bruger .Navbar { color: var(--navbar-fg) })
   if (theme.navbarColor) {
     const navDark = isDark(theme.navbarColor);
+
     root.setProperty('--navbar-fg', navDark ? '#ffffff' : '#000000');
 
-    // valgfrit: sæt navbar baggrundsfarve hvis du ønsker det her
     const navbar = document.querySelector('.Navbar') as HTMLElement | null;
+
     if (navbar) {
       navbar.style.backgroundColor = theme.navbarColor;
     }
@@ -64,10 +82,13 @@ function applyFontColors(theme: { backgroundColor?: string; navbarColor?: string
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const themeRef = ref(database, `users/${user.uid}/theme`);
+
     try {
       const snapshot = await get(themeRef);
+
       if (snapshot.exists()) {
         const theme = snapshot.val() as { backgroundColor?: string; navbarColor?: string };
+
         applyFontColors(theme);
       }
     } catch (err) {

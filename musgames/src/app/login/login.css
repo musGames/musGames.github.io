@@ -1,19 +1,21 @@
 /*removes default spacing from the browser*/
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
 /*centers login page on the screen*/
-body{
+body {
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0;
 }
+
 /*holds the login container in the middle*/
-.login-container{
+.login-container {
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -21,15 +23,15 @@ body{
     align-items: center;
     text-align: center;
     padding: 1rem;
-    color: var(--app-fg); /* all text follows the theme*/
+    color: var(--app-fg);
 }
 
 /* styling of login box*/
-.login-box{
-    background-color: transparent;
+.login-box {
+    background-color: rgba(128, 128, 128, 0.253);
     padding: 30px;
     border-radius: 50px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     width: 100%;
     max-width: 350px;
     min-height: 420px;
@@ -40,64 +42,71 @@ body{
     color: var(--app-fg);
 }
 
-h2{
+h2 {
     margin-bottom: 20px;
     color: var(--app-fg);
 }
 
 /*input fields*/
-input{
+input {
     background-color: transparent;
     width: 100%;
     padding: 12px;
-    border: none;
+    border: 1px solid var(--input-border, rgba(255, 255, 255, 0.18));
     border-radius: 25px;
     font-size: 16px;
     margin-bottom: 10px;
-    transition: box-shadow 0.2s ease;
-    color: var(--app-fg);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    color: var(--input-fg, var(--app-fg));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
 /*shows effect when input is clicked*/
-input:focus{
- outline: none;
- box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18),  
- 0 0 0 2px var(--app-fg);
+input:focus {
+    outline: 3px solid var(--input-focus-outline, rgba(106, 125, 255, 0.28));
+    outline-offset: 2px;
+    border-color: var(--input-focus-border, #6a7dff);
+    color: var(--input-fg, var(--app-fg));
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
 }
 
 /*placeholder color*/
-input::placeholder{
-    color: var(--app-fg);
-    opacity: 0.65;
+input::placeholder {
+    color: var(--input-placeholder-fg, var(--app-fg));
+    opacity: 1;
 }
 
 /*button*/
-.login-btn{
+.login-btn {
     width: 100%;
     padding: 12px;
     background-color: transparent;
-    border: none;
+    border: 1px solid var(--input-border, rgba(255, 255, 255, 0.18));
     border-radius: 25px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.2s ease,
-    box-shadow 0.2 ease,
-    transform 0.06 ease,
-    color 0.2 ease;
-    color: var(--app-fg);
-    box-shadow: 0 2px 10px rgba (0, 0, 0, 0.14);
-
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.06s ease, color 0.2s ease, border-color 0.2s ease;
+    color: var(--input-fg, var(--app-fg));
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
 }
+
 /*makes button darker on hover*/
-.login-btn:hover{
+.login-btn:hover {
     background: rgba(0, 0, 0, 0.08);
+    border-color: var(--input-focus-border, #6a7dff);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
 
 /*small click effect*/
-.login-btn:active{
+.login-btn:active {
     transform: translateY(1px);
+}
+
+/*focus effect for login button*/
+.login-btn:focus {
+    outline: 3px solid var(--input-focus-outline, rgba(106, 125, 255, 0.28));
+    outline-offset: 2px;
+    border-color: var(--input-focus-border, #6a7dff);
 }
 
 /*signup and forgotpass links  */
@@ -110,25 +119,24 @@ input::placeholder{
 
 /*signup and forgot password buttons*/
 .signup-button,
-.forgot-password-button{
+.forgot-password-button {
     background: none;
     border: none;
     font-size: 16px;
     cursor: pointer;
-    transition: text-decoration 0.2 ease, color 0.2s ease;
+    transition: text-decoration 0.2s ease, color 0.2s ease;
     color: var(--app-fg);
 }
 
 /*underline effect on hover*/
 .signup-button:hover,
-.forgot-password-button:hover{
+.forgot-password-button:hover {
     text-decoration: underline;
 }
 
 /*error & success messages */
 .error-box,
 .success-box {
-
     margin-top: 20px;
     padding: 12px;
     border-radius: 25px;
@@ -139,18 +147,19 @@ input::placeholder{
     box-shadow: 0 6px rgba(0, 0, 0, 0.022);
 }
 
-.error-box{
+.error-box {
     background-color: rgba(255, 0, 0, 0.15);
     color: red;
 }
 
-.success-box{
+.success-box {
     background-color: rgba(0, 128, 0, 0.15);
     color: green;
 }
+
 /*smaller styles for mobile*/
 @media(max-width: 600px) {
-    .login-box{
+    .login-box {
         padding: 20px;
         border-radius: 30px;
         box-shadow: 0 5px 14px rgba(0, 0, 0, 0.28);
@@ -158,23 +167,23 @@ input::placeholder{
 
     /*smaller inputs and button*/
     input,
-.login-btn{
-    font-size: 14px;
-    padding: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-}
+    .login-btn {
+        font-size: 14px;
+        padding: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
 
-/*smaller text buttons*/
-.signup-button,
-.forgot-password-button{
-    font-size: 14px;
-}
+    /*smaller text buttons*/
+    .signup-button,
+    .forgot-password-button {
+        font-size: 14px;
+    }
 
-/*smaller message boxes*/
-.error-box,
-.success-box{
-    font-size: 14px;
-    padding: 10px;
-    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.02);
+    /*smaller message boxes*/
+    .error-box,
+    .success-box {
+        font-size: 14px;
+        padding: 10px;
+        box-shadow: 0 5px 14px rgba(0, 0, 0, 0.02);
+    }
 }

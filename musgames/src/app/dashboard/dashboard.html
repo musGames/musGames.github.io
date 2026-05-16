@@ -1,58 +1,61 @@
 <div class="dashboard-wrapper">
 
-  <!-- Øverste række -->
-  <div class="top-row">
+  <div class="dashboard-content">
 
-    <!-- Latest box -->
-    <div class="box latest-box">
-      <h2>Latest</h2>
-      <div *ngIf="latestGames.length > 0" class="latest-content">
-        <a [routerLink]="['/game', latestGames[0].id]" class="image-link">
-          <img [src]="latestGames[0].imageUrl" alt="{{ latestGames[0].title }}" />
-          <h3>{{ latestGames[0].title }}</h3>
+    <div class="featured-section" *ngIf="featuredGames.length > 0">
+
+      <button class="featured-nav-btn featured-nav-left" type="button" (click)="previousFeaturedCard()">‹</button>
+
+      <div
+        *ngFor="let game of featuredGames; let i = index"
+        [class]="getFeaturedCardClass(i)">
+
+        <a [routerLink]="['/game', game.id]" class="featured-card-link">
+          <img [src]="game.imageUrl" alt="{{ game.title }}" />
+
+          <div class="featured-card-content">
+            <h1>{{ game.title }}</h1>
+            <p>Play the newest game on Arcade.IO</p>
+
+            <div class="featured-card-actions">
+              <span class="play-label">PLAY</span>
+              <span class="play-circle">▶</span>
+            </div>
+          </div>
         </a>
+
+      </div>
+
+      <button class="featured-nav-btn featured-nav-right" type="button" (click)="nextFeaturedCard()">›</button>
+
+    </div>
+
+    <div class="games-header">
+      <h2>Games</h2>
+
+      <div class="games-header-actions">
+        <a routerLink="/dashboard" class="view-all-link">View all</a>
+        <button class="small-scroll-btn" type="button" (click)="scrollLeft()">‹</button>
+        <button class="small-scroll-btn" type="button" (click)="scrollRight()">›</button>
       </div>
     </div>
 
-    <!-- Most Played box -->
-    <div class="box most-played-box">
-      <h2>Most Played</h2>
+    <div class="scroll-section">
 
-      <div *ngIf="popularGames.length === 0">
-        <p>Ingen data endnu</p>
-      </div>
-
-      <div class="most-list" *ngIf="popularGames.length > 0">
-        <div *ngFor="let game of popularGames; let i = index" class="most-item">
-          <div class="divider" *ngIf="i !== 0"></div>
-
-          <a [routerLink]="['/game', game.id]" class="most-card">
-            <span class="rank">{{ i + 1 }}.</span>
+      <div class="scroll-container" #scrollContainer>
+        <div class="game-card" *ngFor="let game of games">
+          <a [routerLink]="['/game', game.id]" class="game-card-link">
             <img [src]="game.imageUrl" alt="{{ game.title }}" />
-            <div class="game-info">
-              <p class="title">{{ game.title }}</p>
-              <p class="plays">{{ game.plays }} plays</p>
+
+            <div class="game-card-content">
+              <p class="game-title">{{ game.title }}</p>
             </div>
           </a>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Scrollbar med spil -->
-  <div class="scroll-section">
-    <button class="scroll-btn left" (click)="scrollLeft()">&#x25C0;</button>
-
-    <div class="scroll-container" #scrollContainer>
-      <div class="box game-card" *ngFor="let game of games">
-        <a [routerLink]="['/game', game.id]">
-          <img [src]="game.imageUrl" alt="{{ game.title }}" />
-          <p>{{ game.title }}</p>
-        </a>
-      </div>
     </div>
 
-    <button class="scroll-btn right" (click)="scrollRight()">&#x25B6;</button>
   </div>
 
 </div>

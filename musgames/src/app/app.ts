@@ -12,7 +12,6 @@ import { NavbarComponent } from './navbar/navbar';
   imports: [RouterModule, CommonModule, NavbarComponent],  // Add CommonModule here
   styleUrls: ['./app.css']
 })
-//selin 2025-03-2025
 export class App {
   showNavbar = true;
 
@@ -26,4 +25,3 @@ export class App {
   
 }
 
-//selin 2025-03-2025
