@@ -68,7 +68,7 @@
         </div>
 
         <div class="profile-picture-upload">
-          <img [src]="user.photoURL || 'assets/default-avatar.png'" alt="Profile Picture" class="avatar-preview"/>
+          <img [src]="profileImageUrl" alt="Profile Picture" class="avatar-preview"/>
           <input type="file" (change)="onFileSelected($event)" accept="image/*"/>
         </div>
 
