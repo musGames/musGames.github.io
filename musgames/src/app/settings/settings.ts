@@ -129,29 +129,29 @@ export class SettingsComponent implements OnInit {
   }
 
   submitNewDisplayName() {
-  const db = this.firebaseService.getDatabase();
-  const usersRef = ref(db, 'users');
-  const displayNameQuery = query(usersRef, orderByChild('displayName'), equalTo(this.newDisplayName));
+    const db = this.firebaseService.getDatabase();
+    const usersRef = ref(db, 'users');
+    const displayNameQuery = query(usersRef, orderByChild('displayName'), equalTo(this.newDisplayName));
 
-  // check if username is already taken
-  get(displayNameQuery).then(snapshot => {
-    if (snapshot.exists()) {
-      alert('Username is already taken.');
-      return;
-    }
+    // check if username is already taken
+    get(displayNameQuery).then(snapshot => {
+      if (snapshot.exists()) {
+        alert('Username is already taken.');
+        return;
+      }
 
-    const user = this.firebaseService.getCurrentUser();
-    if (user) {
-      // ✅ updateDisplayName handles both Auth + DB update
-      this.firebaseService.updateDisplayName(user.uid, this.newDisplayName)
-        .then(() => {
-          alert('Username updated successfully!');
-          this.currentDisplayName = this.newDisplayName;
-        })
-        .catch(error => console.error('Error updating username:', error));
-    }
-  }).catch(error => console.error('Error checking username:', error));
-}
+      const user = this.firebaseService.getCurrentUser();
+      if (user) {
+        // ✅ updateDisplayName handles both Auth + DB update
+        this.firebaseService.updateDisplayName(user.uid, this.newDisplayName)
+          .then(() => {
+            alert('Username updated successfully!');
+            this.currentDisplayName = this.newDisplayName;
+          })
+          .catch(error => console.error('Error updating username:', error));
+      }
+    }).catch(error => console.error('Error checking username:', error));
+  }
 
   updateBackgroundColor(event: any) {
     this.backgroundColor = event.target.value;
@@ -190,45 +190,45 @@ export class SettingsComponent implements OnInit {
     this.selectedFile = event.target.files[0] || null;
   }
 
-async uploadProfilePicture() {
-  if (!this.selectedFile) return;
-  this.uploading = true;
+  async uploadProfilePicture() {
+    if (!this.selectedFile) return;
+    this.uploading = true;
 
-  const user = this.firebaseService.getCurrentUser();
-  if (!user) return;
+    const user = this.firebaseService.getCurrentUser();
+    if (!user) return;
 
-  const sig = await this.http.post<any>(this.SIGN_FN_URL, {
-    public_id: user.uid
-  }).toPromise();
+    const sig = await this.http.post<any>(this.SIGN_FN_URL, {
+      public_id: user.uid
+    }).toPromise();
 
-  const form = new FormData();
-  form.append('file', this.selectedFile);
-  form.append('public_id', sig.public_id);
-  form.append('timestamp', String(sig.timestamp));
-  form.append('api_key', sig.api_key);
-  form.append('signature', sig.signature);
-  form.append('overwrite', 'true');
-  form.append('invalidate', 'true');
+    const form = new FormData();
+    form.append('file', this.selectedFile);
+    form.append('public_id', sig.public_id);
+    form.append('timestamp', String(sig.timestamp));
+    form.append('api_key', sig.api_key);
+    form.append('signature', sig.signature);
+    form.append('overwrite', 'true');
+    form.append('invalidate', 'true');
 
-  const uploadRes = await this.http.post<any>(
-    `https://api.cloudinary.com/v1_1/${sig.cloud_name}/image/upload`,
-    form
-  ).toPromise();
+    const uploadRes = await this.http.post<any>(
+      `https://api.cloudinary.com/v1_1/${sig.cloud_name}/image/upload`,
+      form
+    ).toPromise();
 
-  const imageUrl = uploadRes.secure_url;
-  const newPublicId = uploadRes.public_id;
+    const imageUrl = uploadRes.secure_url;
+    const newPublicId = uploadRes.public_id;
 
-  const db = this.firebaseService.getDatabase();
-  const userRef = ref(db, `users/${user.uid}`);
-  await update(userRef, { photoURL: imageUrl, photoPublicId: newPublicId });
+    const db = this.firebaseService.getDatabase();
+    const userRef = ref(db, `users/${user.uid}`);
+    await update(userRef, { photoURL: imageUrl, photoPublicId: newPublicId });
 
-  this.user.photoURL = imageUrl;
-  this.user.photoPublicId = newPublicId;
-  this.selectedFile = null;
-  this.uploading = false;
-  this.showProfileMenu = false;
-  alert('Profile picture updated successfully!');
-}
+    this.user.photoURL = imageUrl;
+    this.user.photoPublicId = newPublicId;
+    this.selectedFile = null;
+    this.uploading = false;
+    this.showProfileMenu = false;
+    alert('Profile picture updated successfully!');
+  }
 
 
 }
