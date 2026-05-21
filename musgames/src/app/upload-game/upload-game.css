@@ -1,11 +1,9 @@
-/* Martin 25-03-2025 */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Body Styling */
 body {
   background-color: #ffffff;
   height: 100vh;
@@ -15,7 +13,6 @@ body {
   padding: 0;
 }
 
-/* Main Container */
 .game-container {
   width: 100%;
   max-width: 500px;
@@ -27,12 +24,10 @@ body {
   text-align: center;
 }
 
-/* Header */
 .game-container h2 {
   margin-bottom: 20px;
 }
 
-/* Labels */
 .game-container label {
   display: block;
   margin-bottom: 5px;
@@ -40,7 +35,6 @@ body {
   font-size: 16px;
 }
 
-/* Inputs and Textarea */
 .game-container input[type="text"],
 .game-container textarea,
 .game-container select {
@@ -61,7 +55,6 @@ body {
   outline: none;
 }
 
-/* Submit Button */
 .game-container button[type="submit"] {
   width: 100%;
   padding: 12px;
@@ -89,4 +82,3 @@ button{
 button:hover {
   background: white;
 }
-/* Martin 25-03-2025 */

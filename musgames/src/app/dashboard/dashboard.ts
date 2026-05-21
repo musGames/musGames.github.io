@@ -1,6 +1,5 @@
 /*
   dashboardet
-  skrevet om så den ikke viser login besked 2 gange
   firebase data bliver kun hentet i browseren så SSR ikke henter spillene på serveren
   changeDetectorRef bruges til at tvinge dashboardet til at vise firebase data efter det er hentet
   featured carousel bruger activeFeaturedIndex så den dynamisk kan skifte mellem hvert game card

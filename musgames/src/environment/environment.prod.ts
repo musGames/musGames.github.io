@@ -11,5 +11,5 @@ export const environment = {
     appId: "DIN_FIREBASE_APP_ID"
   },
 
-  cloudinarySignFnUrl: "https://getcloudinarysignature-kue75vprba-ew.a.run.app"
+  cloudinarySignFnUrl: "https://getcloudinarysignature-kue75vprba-ew.a.run.app"//denne url er skaffet ved firebase deploy når den er fuldkommen færdig med at build til deployment, og den er nødvendig for at kunne uploade billeder til cloudinary
 };

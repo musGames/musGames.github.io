@@ -1,4 +1,3 @@
-/* Martin 25-03-2025 – OPDATERET 11-07-2025 */
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -10,11 +9,6 @@ export class AuthGuard implements CanActivate {
 
   constructor(private router: Router) {}
 
-  /**
-   * Venter maksimalt 3 sekunder på, at Firebase loader den
-   * persisterede session. Giver TRUE hvis bruger findes,
-   * ellers redirect til /login og giver FALSE.
-   */
   canActivate(): Promise<boolean> {
     const auth = getAuth();
 
@@ -28,7 +22,6 @@ export class AuthGuard implements CanActivate {
         }
       };
 
-      /* Lyt på auth-state */
       const unsubscribe = onAuthStateChanged(
         auth,
         (user) => {
@@ -45,7 +38,6 @@ export class AuthGuard implements CanActivate {
         }
       );
 
-      /* Fallback-timeout på 3 sek. */
       setTimeout(() => {
         unsubscribe();
         if (auth.currentUser) {

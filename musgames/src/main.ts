@@ -11,7 +11,6 @@ const firebaseApp = initializeApp(environment.firebaseConfig);
 const auth = getAuth(firebaseApp);
 const database = getDatabase(firebaseApp);
 
-// Beregn om farven er mørk eller lys returnerer true hvis mørk
 function isDark(hexColor: string): boolean {
   if (!hexColor || typeof hexColor !== 'string') return false;
 
@@ -40,7 +39,6 @@ function isDark(hexColor: string): boolean {
   return luminance < 128;
 }
 
-// Sæt CSS variabler for fontfarver og input styling ud fra theme
 function applyFontColors(theme: { backgroundColor?: string; navbarColor?: string }) {
   const root = document.documentElement.style;
 

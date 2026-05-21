@@ -1,4 +1,3 @@
-/* Hele dashboardet */
 .dashboard-wrapper {
   display: flex;
   flex-direction: column;
@@ -14,7 +13,6 @@
   --panel-bg-soft: rgba(190, 190, 190, 0.18);
 }
 
-/* Samlet content så layoutet bruger hele skærmen */
 .dashboard-content {
   display: flex;
   flex-direction: column;
@@ -27,7 +25,6 @@
   overflow: visible;
 }
 
-/* Featured carousel */
 .featured-section {
   position: relative;
   width: 100%;
@@ -37,7 +34,6 @@
   box-sizing: border-box;
 }
 
-/* Alle featured cards ligger samme sted og bliver flyttet med transform */
 .featured-card {
   position: absolute;
   top: 50%;
@@ -55,42 +51,36 @@
     height 0.45s ease;
 }
 
-/* Aktivt card i midten */
 .featured-card-active {
   z-index: 5;
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
 
-/* Første card til venstre */
 .featured-card-left-one {
   z-index: 4;
   opacity: 0.88;
   transform: translate(calc(-50% - clamp(300px, 25vw, 460px)), -50%) scale(0.82);
 }
 
-/* Andet card til venstre */
 .featured-card-left-two {
   z-index: 3;
   opacity: 0.62;
   transform: translate(calc(-50% - clamp(520px, 43vw, 760px)), -50%) scale(0.68);
 }
 
-/* Første card til højre */
 .featured-card-right-one {
   z-index: 4;
   opacity: 0.88;
   transform: translate(calc(-50% + clamp(300px, 25vw, 460px)), -50%) scale(0.82);
 }
 
-/* Andet card til højre */
 .featured-card-right-two {
   z-index: 3;
   opacity: 0.62;
   transform: translate(calc(-50% + clamp(520px, 43vw, 760px)), -50%) scale(0.68);
 }
 
-/* Cards der ikke skal vises lige nu */
 .featured-card-hidden {
   z-index: 1;
   opacity: 0;
@@ -98,7 +88,6 @@
   transform: translate(-50%, -50%) scale(0.55);
 }
 
-/* Link inde i featured card */
 .featured-card-link {
   display: flex;
   flex-direction: column;
@@ -108,7 +97,6 @@
   overflow: hidden;
 }
 
-/* Billede øverst */
 .featured-card-link img {
   width: 100%;
   height: 68%;
@@ -116,7 +104,6 @@
   flex-shrink: 0;
 }
 
-/* Tekst under billedet */
 .featured-card-content {
   display: flex;
   flex-direction: column;

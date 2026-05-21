@@ -6,13 +6,7 @@
 }
 
 /*centers login page on the screen*/
-body {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-}
+
 
 /*holds the login container in the middle*/
 .login-container {

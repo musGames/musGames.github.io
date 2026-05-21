@@ -30,7 +30,7 @@ export class uploadgameComponent implements OnInit {
 
   createNewGame(): void {
     if (this.gameForm.invalid) {
-      return; // or show a warning message
+      return;
     }
 
     const { title, description, imageUrl, netlifyUrl, platform } = this.gameForm.value;

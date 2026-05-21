@@ -1,6 +1,4 @@
-/* -------------------------------------------------
-   HOVED LAYOUT – game + dc-box
-   ------------------------------------------------- */
+
 .container {
   display: flex;
   flex-direction: row;
@@ -13,9 +11,7 @@
   overflow: hidden;
 }
 
-/* -------------------------------------------------
-   GAME – holder 16:9 ratio og styrer højden
-   ------------------------------------------------- */
+
 .game-container {
   flex: 1 1 auto;
   display: flex;
@@ -25,7 +21,6 @@
   overflow: hidden;
 }
 
-/* Header */
 .game-header {
   flex-shrink: 0;
   display: flex;
@@ -87,11 +82,10 @@ iframe {
   flex-direction: column;
   gap: 1rem;
   height: 100%;
-  max-height: calc(100vh - 3rem); /* match full height minus padding */
+  max-height: calc(100vh - 3rem); 
   overflow: hidden;
 }
 
-/* DESCRIPTION */
 .game-description {
   flex: 1 1 50%;
   overflow-y: auto;
@@ -110,7 +104,6 @@ iframe {
   white-space: pre-line;
 }
 
-/* CHAT */
 .chat {
   flex: 1 1 50%;
   overflow-y: auto;
